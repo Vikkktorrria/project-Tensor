@@ -4,4 +4,123 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
+
+@font-face {
+  font-family: 'Roboto';
+  src: url(../fonts/Roboto-Medium.ttf);
+}
+
+@font-face {
+  font-family: 'Roboto-light';
+  src: url(../fonts/Roboto-Light.ttf);
+}
+
+body {
+  font-family: 'Roboto-light';
+  background: #0b0d0f;
+  background: -webkit-gradient(linear, left top, left bottom, from(#bbdff9), to(#459cf7));
+  background: linear-gradient(180deg, #bbdff9 0%, #459cf7 100%);
+  height: 100vh;
+}
+
+.container-wrapper {
+  min-width: 90vw;
+  height: 100vh;
+}
+
+.head {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  color: #152f70;
+  height: 10%;
+  padding-top: 20px;
+}
+
+.name {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.name__text {
+  padding-right: 20px;
+}
+
+.article {
+  padding-top: 20px;
+  height: 90%;
+}
+
+.navigation {
+  color: #152f70;
+  padding: 10px 0 0 0;
+}
+
+.navigation__el {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: large;
+  padding: 15px 10px;
+}
+
+.navigation__el:hover {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background-color: rgba(81, 148, 239, 0.5);
+}
+
+.navigation__text {
+  padding-left: 20px;
+}
+
+.navigation__icon {
+  width: 32px;
+  height: 32px;
+}
+
+.note-icon {
+  background: url(../image/note-icon.png) no-repeat;
+  background-size: cover;
+}
+
+.notification-icon {
+  background: url(../image/notification-icon.png) no-repeat;
+  background-size: cover;
+}
+
+.settings-icon {
+  background: url(../image/settings-icon.png) no-repeat;
+  background-size: cover;
+}
+
+.user-icon {
+  background: url(../image/user-icon.png) no-repeat;
+  background-size: cover;
+}
+
+.visits-icon {
+  background: url(../image/visits-icon.png) no-repeat;
+  background-size: cover;
+}
+
+.content {
+  margin: 0;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  background-color: #ffffff;
+  -webkit-box-shadow: 7px 8px 14px 7px rgba(34, 60, 80, 0.2);
+          box-shadow: 7px 8px 14px 7px rgba(34, 60, 80, 0.2);
+}
 /*# sourceMappingURL=style.css.map */
