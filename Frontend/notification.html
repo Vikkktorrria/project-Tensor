@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="./image/favicon.png">
-    <link rel="stylesheet" href="./style/style.css">
     <title>MedCard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 <body>
     <div class="container-wrapper container">
@@ -32,83 +32,99 @@
         </header>
         <div class="article row">
             <nav class="navigation col-2">
-                <div class="navigation__el">
+                <a href="profile.html" class="navigation__el">
                     <div class="navigation__icon user-icon">
                     </div>
                     <div class="navigation__text">
                         Профиль
                     </div>
-                </div>
-                <div class="navigation__el">
+                </a>
+                <a href="notification.html" class="navigation__el">
                     <div class="navigation__icon notification-icon">
                     </div>
                     <div class="navigation__text">
                         Уведомления
                     </div>
-                </div>
-                <div class="navigation__el">
+                </a>
+                <a href="note.html" class="navigation__el">
                     <div class="navigation__icon note-icon">
                     </div>
                     <div class="navigation__text">
                         Запись
                     </div>
-                </div>
-                <div class="navigation__el">
+                </a>
+                <a href="health.html" class="navigation__el">
                     <div class="navigation__icon visits-icon">
                     </div>
                     <div class="navigation__text">
                         Здоровье
                     </div>
-                </div>
-                <div class="navigation__el">
+                </a>
+                <a href="settings.html" class="navigation__el">
                     <div class="navigation__icon settings-icon">
                     </div>
                     <div class="navigation__text">
                         Настройки
                     </div>
-                </div>
+                </a>
             </nav>
             <section class="content col-8">
-                <div class=" container">
-                    <div class="">
+                <div class="container">
+                    <div class="card-slider">
                         <div class="swiper">
-                            <!-- Additional required wrapper -->
                             <div class="swiper-wrapper">
-                              <!-- Slides -->
-                              <div class="swiper-slide"><img src="./image/slide_1.png" alt=""></div>
-                              <div class="swiper-slide"><img src="./image/slide_2.jpg" alt=""></div>
-                              <div class="swiper-slide"><img src="./image/slide_3.jpg" alt=""></div>
+                                <div class="swiper-slide">
+                                    <div class="swiper__slide-image">
+                                        <img src="./image/slide_1.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="swiper__slide-image">
+                                        <img src="./image/slide_2.jpg" alt="">
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="swiper__slide-image">
+                                        <img src="./image/slide_3.jpg" alt="">
+                                    </div>
+                                </div>
                             </div>
-                            <!-- If we need pagination -->
-                            <div class="swiper-pagination"></div>
-                          
-                            <!-- If we need navigation buttons -->
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-button-next"></div>
-                          
-                            <!-- If we need scrollbar -->
-                            <div class="swiper-scrollbar"></div>
-                          </div>
-                    </div>
-                    <div class="">
-                        <div class="card__title">
-                                    DSDFDSF
                         </div>
-                        <div class="card__text">
-
-                        </div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-pagination"></div>
                     </div>
-                    <div class="">
-                        
+                    <div class="row">
+                        <div class="card col">
+                            <div class="card__title">
+                                Мой профиль
+                            </div>
+                            <div class="card__text">
+                                Профиль заполнен на 67%
+                            </div>
+                        </div>
+                        <div class="card col">
+                            <div class="card__title">
+                                Мои записи
+                            </div>
+                            <div class="card__text">
+                                Ближайшая запись 22/10/2021
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <footer class='footer'>
-                    
+                    <p class="footer__text">
+                        Сайт разработан командой ___
+                    </p>
+                    <p class="footer__text">
+                        2021
+                    </p>
                 </footer>
             </section>
         </div>
     </div>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="./js/javascript.js"></script>
 </body>
-<script src="./js/javascript.js"></script>
-<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 </html>
