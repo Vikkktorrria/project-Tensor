@@ -1,4 +1,4 @@
-// window.onload = function () {
+window.onload = function () {
     const swiper = new Swiper('.swiper', {
         direction: 'horizontal',
         loop: true,
@@ -14,4 +14,14 @@
             prevEl: '.swiper-button-prev',
         },
     });
-// }
+}
+function navigation() {
+    if (document.querySelector('.navigation').classList.contains('active')) {
+        document.querySelector('.navigation').classList.remove('active')
+        // document.querySelector('.navigation__burger').classList.remove('active')
+
+    } else {
+        document.querySelector('.navigation').classList.add('active')
+        // document.querySelector('.navigation__burger').classList.add('active')
+    }
+}
