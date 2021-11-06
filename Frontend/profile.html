@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./image/favicon.png">
+    <title>MedCard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <div class="container-wrapper container">
+        <header class="head">
+            <div class="logo">
+                <img src="./image/logo.png" alt="MedCard">
+                <a class="phone" href="tel:+73452564276">+ 7 3452 <span class="phone_bold">564-276</span></a>
+            </div>
+            <div class="name">
+                <div class="name__text">
+                    Здравствуйте, Татьяна!
+                </div>
+                <div class="name__icon">
+                </div>
+            </div>
+        </header>
+        <div class="article row">
+            <nav class="navigation col-lg-2">
+                <div class="navigation__burger" onclick="navigation()">
+                    <div class="navigation__line"></div>
+                    <div class="navigation__line"></div>
+                    <div class="navigation__line"></div>
+                </div>
+                <div class="navigation__bar">
+                    <a href="profile.html" class="navigation__el active">
+                        <div class="navigation__icon user-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Профиль
+                        </div>
+                    </a>
+                    <a href="notification.html" class="navigation__el">
+                        <div class="navigation__icon notification-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Уведомления
+                        </div>
+                    </a>
+                    <a href="note.html" class="navigation__el">
+                        <div class="navigation__icon note-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Запись
+                        </div>
+                    </a>
+                    <a href="health.html" class="navigation__el">
+                        <div class="navigation__icon visits-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Здоровье
+                        </div>
+                    </a>
+                    <a href="settings.html" class="navigation__el">
+                        <div class="navigation__icon settings-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Настройки
+                        </div>
+                    </a>
+                </div>
+            </nav>
+            <section class="content col-lg-8">
+                <div class="container">
+                    <div class="row">
+                        <div class="card card_user col-2">
+                            <img class="card_user__image" src="./image/user-icon.png" alt="Татьяна">
+                        </div>
+                        <div class="card card_no-border col-md-8">
+                            <div class="card__title">
+                                Татьяна
+                            </div>
+                            <div class="card__text">
+                                20лет
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="card card_no-border col-md-5">
+                            <h3 class="card__title">
+                                Паспортные данные
+                            </h3>
+                            <div class="card__text">
+                                <form class="form form_card" onSubmit="event.preventDefault(); checkProfileForm();">
+                                    <div class="form__el form_card__el">
+                                        Серия: 
+                                        <input type="text" class="form__input form_card__input" id="passport-seria" name="passport-seria" placeholder="1111">
+                                        <small>Error message</small>
+                                    </div>
+                                    <div class="form__el form_card__el">
+                                        Номер: 
+                                        <input type="text" class="form__input form_card__input" id="passport-number" name="passport-number" placeholder="999999">
+                                        <small>Error message</small>
+                                    </div>
+                                    <div class="form__button form_card__button">
+                                        <button class="btn">
+                                            Сохранить
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card card_no-border col-md-5">
+                            <h3 class="card__title">
+                                Снилс
+                            </h3>
+                            <div class="card__text">
+                                <form class="form form_card" onSubmit="event.preventDefault(); checkProfileForm();">
+                                    <div class="form__el form_card__el">
+                                        Номер: 
+                                        <input type="text" class="form__input form_card__input" id="name" name="name" placeholder="111-222-333333">
+                                        <small>Error message</small>
+                                    </div>
+                                    <div class="form__button form_card__button">
+                                        <button class="btn">
+                                            Изменить
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class='footer row'>
+                    <p class="footer__text">
+                        Сайт разработан командой ___
+                    </p>
+                    <p class="footer__text">
+                        2021
+                    </p>
+                </footer>
+            </section>
+        </div>
+    </div>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="./js/javascript.js"></script>
+</body>
+</html>

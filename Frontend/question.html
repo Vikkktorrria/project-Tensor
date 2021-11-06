@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./image/favicon.png">
+    <title>MedCard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <div class="container-wrapper container">
+        <header class="head head_center">
+            <div class="logo">
+                <img src="./image/logo.png" alt="MedCard">
+                <a class="phone" href="tel:+73452564276">+ 7 3452 <span class="phone_bold">564-276</span></a>
+            </div>
+        </header>
+        <div class="article row">
+            <nav class="navigation col-lg-2">
+                <div class="navigation__burger" onclick="navigation()">
+                    <div class="navigation__line"></div>
+                    <div class="navigation__line"></div>
+                    <div class="navigation__line"></div>
+                </div>
+                <div class="navigation__bar">
+                    <a href="registration.html" class="navigation__el">
+                        <div class="navigation__icon user-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Регистрация
+                        </div>
+                    </a>
+                    <a href="auth.html" class="navigation__el">
+                        <div class="navigation__icon enter-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Вход
+                        </div>
+                    </a>
+                    <a href="question.html" class="navigation__el active">
+                        <div class="navigation__icon question-icon">
+                        </div>
+                        <div class="navigation__text">
+                            Помощь
+                        </div>
+                    </a>
+                </div>
+            </nav>
+            <section class="content col-lg-8">
+                <div class="container container_only-row">
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Не могу вспомнить пароль
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Не могу вспомнить почту
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Хочу узнать телефон больницы
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Хочу узнать адресс больницы
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <footer class='footer row'>
+                    <p class="footer__text">
+                        Сайт разработан командой ___
+                    </p>
+                    <p class="footer__text">
+                        2021
+                    </p>
+                </footer>
+            </section>
+        </div>
+    </div>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="./js/javascript.js"></script>
+</body>
+</html>
