@@ -26,14 +26,14 @@
                     <div class="navigation__line"></div>
                 </div>
                 <div class="navigation__bar">
-                    <a href="registration.html" class="navigation__el">
+                    <a href="registration.html" class="navigation__el active">
                         <div class="navigation__icon user-icon">
                         </div>
                         <div class="navigation__text">
                             Регистрация
                         </div>
                     </a>
-                    <a href="auth.html" class="navigation__el active">
+                    <a href="auth.html" class="navigation__el">
                         <div class="navigation__icon enter-icon">
                         </div>
                         <div class="navigation__text">
@@ -50,16 +50,44 @@
                 </div>
             </nav>
             <section class="content col-lg-8">
-                <h1 class="h1-text">Авторизация</h1>
+                <h1 class="h1-text">Регистрация</h1>
                 <div class="content__container">
-                    <form class="form" onSubmit="event.preventDefault(); checkAuthForm();">
+                    <form class="form" onSubmit="event.preventDefault(); checkRegistrationForm();">
+                        <div class="form__el">
+                            <input type="text" class="form__input" id="name" name="name" placeholder="Имя">
+                            <small>Error message</small>
+                        </div>
+                        <div class="form__el">
+                            <input type="text" class="form__input" id="lastName" name="lastName" placeholder="Фамилия">
+                            <small>Error message</small>
+                        </div>
                         <div class="form__el">
                             <input type="text" class="form__input" id="email" name="email" placeholder="Почта">
                             <small>Error message</small>
                         </div>
                         <div class="form__el">
+                            <input type="text" class="form__input" id="phone" name="phone" placeholder="Телефон">
+                            <small>Error message</small>
+                        </div>
+                        <div class="form__el">
                             <input type="password" class="form__input" id="password" name="password" placeholder="Пароль">
                             <small>Error message</small>
+                        </div>
+                        <div class="form__el">
+                            <input type="password" class="form__input" id="repeatPassword" name="repeatPassword" placeholder="Повторите пароль">
+                            <small>Error message</small>
+                        </div>
+                        <div class="form__el form__el_checkbox">
+                            <input type="checkbox" name="notification" class="notification" id="notification">
+                            <p class="form__text-p">Сообщать об изменениях по почте</p>
+                        </div>
+                        <div class="form__el form__el_checkbox">
+                            <input type="checkbox" name="consent" class="consent" id="consent">
+                            <p class="form__text-p">
+                                Подтверждаю согласие 
+                                <span class="form__text-span">с политикой обработки персональных данных</span>
+                                <small>Error message</small>
+                            </p>
                         </div>
                         <div class="form__button">
                             <button class="btn">

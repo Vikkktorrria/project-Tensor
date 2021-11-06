@@ -33,14 +33,14 @@
                             Регистрация
                         </div>
                     </a>
-                    <a href="auth.html" class="navigation__el active">
+                    <a href="auth.html" class="navigation__el">
                         <div class="navigation__icon enter-icon">
                         </div>
                         <div class="navigation__text">
                             Вход
                         </div>
                     </a>
-                    <a href="question.html" class="navigation__el">
+                    <a href="question.html" class="navigation__el active">
                         <div class="navigation__icon question-icon">
                         </div>
                         <div class="navigation__text">
@@ -50,23 +50,35 @@
                 </div>
             </nav>
             <section class="content col-lg-8">
-                <h1 class="h1-text">Авторизация</h1>
-                <div class="content__container">
-                    <form class="form" onSubmit="event.preventDefault(); checkAuthForm();">
-                        <div class="form__el">
-                            <input type="text" class="form__input" id="email" name="email" placeholder="Почта">
-                            <small>Error message</small>
-                        </div>
-                        <div class="form__el">
-                            <input type="password" class="form__input" id="password" name="password" placeholder="Пароль">
-                            <small>Error message</small>
-                        </div>
-                        <div class="form__button">
-                            <button class="btn">
-                                Отправить
-                            </button>
-                        </div>
-                    </form>
+                <div class="container container_only-row">
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Не могу вспомнить пароль
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Не могу вспомнить почту
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Хочу узнать телефон больницы
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <a class="card col-md-8" href="#">
+                            <div class="card__text">
+                                Хочу узнать адресс больницы
+                            </div>
+                        </a>
+                    </div>
                 </div>
                 <footer class='footer row'>
                     <p class="footer__text">
