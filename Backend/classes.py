@@ -26,7 +26,7 @@ class PatientProfile:
         self._anamnesis = value
     
     def __str__(self):
-        return "Профиль пациента " + {self.fullName} + ", паспорт № " + {self.passport}
+        return "Профиль пациента {name}, паспорт № {passport}".format(name=self.fullName, passport=self.passport)
 
 
 class DoctorProfile:
@@ -56,8 +56,9 @@ class DoctorProfile:
     def profiling(self, value):
         self._profiling = value
 
-    def __str__(self) -> str:
-        return "Врач-" + {self.profiling} + " " + {self.fullName} + ". Квалификация: " + {self.qualification}
+    def __str__(self):
+        return "Врач- {profiling} {name}".format(profiling=self.profiling, name=self.fullName)\
+               + " " + "Квалификация: {qualification}".format(qualification=self.qualification)
 
 
 class Diagnosis:
@@ -73,8 +74,8 @@ class Diagnosis:
     def infAboutDiagnos(self, value):
         self._infAboutDiagnos = value
 
-    def __str__(self) -> str:
-        return "Диагноз: " + {self.infAboutDiagnos}
+    def __str__(self):
+        return "Диагноз: {diagnos_inf}".format(diagnos_inf=self.infAboutDiagnos)
 
 
 class Recipe:
@@ -90,15 +91,17 @@ class Recipe:
     def infAboutRecipe(self, value):
         self._infAboutRecipe = value
 
-    def __str__(self) -> str:
-        return "Рецепт: " + {self.infAboutRecipe}
+    def __str__(self):
+        return "Рецепт: {recipe}".format(recipe=self.recipe)
 
 
-class Note(Diagnosis, Recipe):
+class Note:
     """Класс для работы записями на приём"""
-    def __init__(self, date, information):
+    def __init__(self, date, information, Recipe, Diagnosis):
         self._date = date
         self._information = information
+        self.recipe = Recipe
+        self.diagnosis = Diagnosis
 
     @property
     def date(self):
@@ -114,8 +117,8 @@ class Note(Diagnosis, Recipe):
     def information(self, value):
         self._information = value
 
-    def __str__(self) -> str:
-        return "Прием назначен на " + {self.date} + "Инф. о приёме: " + {self.information}
+    def __str__(self):
+        return "Приём назначен на {date}".format(date=self.date) + "Информация о приёме: {info}".format(info=self.information)
 
 
 class User:
