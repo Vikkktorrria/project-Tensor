@@ -15,6 +15,33 @@ window.onload = function () {
         },
     });
 }
+    
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ru',
+        showNonCurrentDates: false,
+        headerToolbar: {
+            start: 'dayGridMonth,timeGridWeek,timeGridDay',
+            center: 'title',
+            end: 'today prev,next'
+        },
+        businessHours: [
+            {
+                daysOfWeek: [ 1, 2, 3, 4, 5],
+                startTime: '8:00',
+                endTime: '18:00',
+            },
+            {
+                daysOfWeek: [ 6],
+                startTime: '9:00',
+                endTime: '16:00',
+            }
+        ]
+    });
+    calendar.render();
+});
 function navigation() {
     if (document.querySelector('.navigation').classList.contains('active')) {
         document.querySelector('.navigation').classList.remove('active')
