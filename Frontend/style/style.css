@@ -37,6 +37,10 @@ p {
   margin: 0;
 }
 
+textarea {
+  resize: none;
+}
+
 .h1-text {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -165,6 +169,11 @@ p {
   background-size: cover;
 }
 
+.news-icon {
+  background: url(../image/news-icon.png) no-repeat;
+  background-size: cover;
+}
+
 .notification-icon {
   background: url(../image/notification-icon.png) no-repeat;
   background-size: cover;
@@ -284,6 +293,18 @@ p {
 
 .card__text {
   margin: 10px 0;
+  text-align: justify;
+}
+
+.card__pic {
+  max-width: 800px;
+  max-height: 340px;
+}
+
+.card__pic-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .card-slider {
