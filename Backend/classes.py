@@ -55,12 +55,6 @@ class UserSchema(ma.Schema):
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
-# класс таблицы UserPassport
-class UserPassport(db.Model):
-    # отношения с другими таблицами
-    passport = db.relationship('Passport', backref='user', uselist=False)
-
-
 
 # класс для работы с полями в таблице User
 class UserSchema(ma.Schema):
