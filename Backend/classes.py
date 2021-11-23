@@ -1,11 +1,16 @@
-from flask import Flask, jsonify, request
+from flask import Flask, json, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_marshmallow import Marshmallow
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
+import uuid, jwt
 
 app = Flask(__name__)
+CORS(app) #убираем ошибку CORS
 
 # подключение к MySQL
+app.config['SECRET_KEY'] = 'MEDCARD' # для кодирования информации
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/medcard_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,12 +21,13 @@ ma = Marshmallow(app)
 # класс таблицы User
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(45), nullable=False)
     surname = db.Column(db.String(45), nullable=False)
     patronymic = db.Column(db.String(45))
     b_date = db.Column(db.Date, nullable=False)
     mail = db.Column(db.String(45), nullable=False)
-    password = db.Column(db.String(45), nullable=False)
+    password = db.Column(db.String(80), nullable=False)
     phone_number = db.Column(db.String(45), nullable=False)
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)  # когда изменено
@@ -33,7 +39,8 @@ class User(db.Model):
     snils = db.relationship('Snils', backref='user', uselist=False)
     note = db.relationship('Note', backref='user', uselist=False)
 
-    def __init__(self, name, surname, patronymic, b_date, mail, password, phone_number):
+    def __init__(self, public_id, name, surname, patronymic, b_date, mail, password, phone_number):
+        self.public_id = public_id
         self.name = name
         self.surname = surname
         self.patronymic = patronymic
@@ -47,7 +54,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
-            'id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'password', 'phone_number', 'created_on',
+            'id', 'public_id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'password', 'phone_number', 'created_on',
             'updated_on')
 
 
@@ -55,18 +62,6 @@ class UserSchema(ma.Schema):
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
-
-# класс для работы с полями в таблице User
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'password', 'phone_number', 'created_on',
-            'updated_on')
-
-
-# объекты для отправки и приёмов запросов
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
 
 # класс таблицы Article
 class Article(db.Model):
@@ -268,6 +263,56 @@ class RecipeSchema(ma.Schema):
 # объекты для отправки и приёмов запросов
 recipe_schema = RecipeSchema()
 recipe_schema = RecipeSchema(many=True)
+
+
+# api
+@app.route('/api/user/<public_id>', methods = ['GET'])
+def get_one_user(public_id):
+    user = User.query.filter_by(public_id=public_id).first()
+
+    if not user:
+        return jsonify({'message':'No user found'})
+
+    result = user_schema.dump(user)
+    return jsonify(result)
+
+
+@app.route('/api/auth/registration', methods = ['POST'])
+def create_user():
+    public_id = str(uuid.uuid4())
+    name = request.json['name']
+    surname = request.json['lastName']
+    patronymic = request.json['patronymic']
+    b_date = request.json['birthday']
+    mail = request.json['mail']
+    password = generate_password_hash(request.json['password'], method ='sha256')
+    phone_number = request.json['phone']
+
+    user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number)
+    db.session.add(user)
+    db.session.commit()
+    return make_response('User successful registered', 200)
+
+
+@app.route('/api/login')
+def login():
+    auth = request.authorization
+
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify', 401, {'message':'Login required!'})
+
+    user = User.query.filter_by(phone_number=auth.username).first()
+
+    if not user:
+        return jsonify({'message':'No user found!'})
+
+    if check_password_hash(user.password, auth.password):
+        token = jwt.encode({'public_id': user.public_id, 'exp' : datetime.now()+timedelta(minutes=30)}, app.config['SECRET_KEY'])
+
+        return jsonify({'token': token.decode('UTF-8')})
+    
+    return make_response('Could not verify', 401, {'message':'Login required!'})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
