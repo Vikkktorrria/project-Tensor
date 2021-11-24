@@ -1,38 +1,110 @@
 <template>
-  <h1 class="h1-text">Авторизация</h1>
+  <h1 class="h1-text">Вход</h1>
   <div class="content__container">
-    <form-component
-        v-model:formInputs="formInputs"
-        v-model:buttonText="buttonText"
-    ></form-component>
+    <form class="form" @submit.prevent="submitHandler">
+      <div
+          class="form__el"
+          :class="{
+          'form__el error': v$.email.$error,
+          'form__el success': !v$.email.$error && v$.email.$dirty
+        }"
+      >
+        <input
+            type="text"
+            class="form__input"
+            placeholder="Почта"
+            v-model.trim="v$.email.$model"
+        >
+        <small v-if="v$.email.$model === ''">Поле почта не может быть пустым</small>
+        <small v-if="v$.email.email.$invalid">Поле почта некорректно</small>
+      </div>
+      <div
+          class="form__el"
+          :class="{
+          'form__el error': v$.password.$error,
+          'form__el success': !v$.password.$error && v$.password.$dirty
+        }"
+      >
+        <input
+            type="password"
+            class="form__input"
+            placeholder="Пароль"
+            v-model.trim="v$.password.$model"
+        >
+        <small v-if="v$.password.minLength">Поле пароль некорректно (минимум 6 символов)</small>
+      </div>
+      <div class="form__button">
+        <button class="btn">
+          {{ buttonText }}
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
+import {numeric, required, email, minLength, helpers} from '@vuelidate/validators'
+import useVuelidate from "@vuelidate/core";
+import axios from "axios";
+import {mapMutations} from 'vuex';
 export default {
-  name: "Auth",
+  name: "Registration",
   data() {
     return {
-      formInputs: [
-        {
-          value: '',
-          errorMessage: 'Поле почта не может быть пустым',
-          placeholder: 'Почта',
-          type: 'text'
-        },
-        {
-          value: '',
-          errorMessage: 'Поле пароль не может быть пустым',
-          placeholder: 'Пароль',
-          type: 'text'
-        }
-      ],
+      v$: useVuelidate(),
+      email: '',
+      password: '',
       buttonText: 'Войти'
+    }
+  },
+  validations() {
+    return {
+      email: {
+        required,
+        email
+      },
+      password: {
+        required,
+        minLength: minLength(6)
+      }
+    }
+  },
+  methods: {
+    ...mapMutations({
+      setAuth: 'auth/setAuth'
+    }),
+
+    async submitHandler(e) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
+        console.log('error')
+      } else {
+        try {
+          const response = await axios.post('http://127.0.0.1:5000/api/auth/auth', {
+            headers: {'Content-type': 'application/json'},
+            username: this.v$.email.$model,
+            password: this.v$.password.$model,
+          })
+          console.log(response)
+          localStorage.setItem('token', response.data.token)
+          this.setAuth(true)//после запроса
+          this.$router.push({ name: 'notification' });//после запроса
+          // headers: {
+          //   Authorization: `Bearer ${localStorage.getItem('token')}`
+          // }
+        } catch (error) {
+          alert(error)
+        } finally {
+
+        }
+      }
+    },
+    updateInput(e) {
+      this.$emit('update:value', e.target.value);
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
 </style>

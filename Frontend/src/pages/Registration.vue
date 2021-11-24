@@ -30,14 +30,38 @@
             placeholder="Фамилия"
             v-model.trim="v$.lastName.$model"
         >
-        <small v-if="v$.name.minLength">Поле фамилия не может быть пустым (минимум 4 символа)</small>
+        <small v-if="v$.name.minLength">Поле фамилия не может быть пустым (минимум 2 символа)</small>
       </div>
-      <div class="form__el">
+      <div
+          class="form__el"
+          :class="{
+          'form__el error': v$.patronymic.$error,
+          'form__el success': !v$.patronymic.$error && v$.patronymic.$dirty
+        }"
+      >
         <input
             type="text"
             class="form__input"
             placeholder="Отчество"
+            v-model.trim="v$.patronymic.$model"
         >
+        <small v-if="v$.patronymic.minLength">Поле отчество некорректно (минимум 2 символа)</small>
+      </div>
+      <div
+          class="form__el"
+          :class="{
+          'form__el error': v$.birthday.$error,
+          'form__el success': !v$.birthday.$error && v$.birthday.$dirty
+        }"
+      >
+        <input
+            type="text"
+            class="form__input"
+            placeholder="Дата рождения"
+            v-model.trim="v$.birthday.$model"
+        >
+        <small v-if="v$.birthday.regexBirthday.$invalid">День рождения некоректен (YYYY-MM-DD)</small>
+        <small v-else-if="v$.birthday.required">Поле день рождения не может быть пустым</small>
       </div>
       <div
           class="form__el"
@@ -53,7 +77,7 @@
             v-model.trim="v$.email.$model"
         >
         <small v-if="v$.email.$model === ''">Поле почта не может быть пустым</small>
-        <small v-if="v$.email.email.$invalid">Поле почта не корректно</small>
+        <small v-if="v$.email.email.$invalid">Поле почта некорректно</small>
       </div>
       <div
           class="form__el"
@@ -68,7 +92,8 @@
             placeholder="Телефон"
             v-model.trim="v$.phone.$model"
         >
-        <small v-if="v$.phone.minLength || v$.phone.numeric">Поле телефон не корректно</small>
+        <small v-if="v$.phone.regexPhone.$invalid">Поле телефон некорректно</small>
+        <small v-else-if="v$.phone.required">Поле телефон не может быть пустым</small>
       </div>
       <div
           class="form__el"
@@ -83,7 +108,7 @@
             placeholder="Пароль"
             v-model.trim="v$.password.$model"
         >
-        <small v-if="v$.password.minLength">Поле пароль не корректно (минимум 6 символов)</small>
+        <small v-if="v$.password.minLength">Поле пароль некорректно (минимум 6 символов)</small>
       </div>
       <div
           class="form__el"
@@ -138,10 +163,11 @@
 </template>
 
 <script>
-import {numeric, required, email, minLength} from '@vuelidate/validators'
+import {numeric, required, email, minLength, minValue, helpers} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
-
+const regexBirthday = helpers.regex(/^\d{4}[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/)
+const regexPhone = helpers.regex(/^\+?\d{1,3}?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\-?\d\d$/)
 export default {
   name: "Registration",
   data() {
@@ -156,28 +182,30 @@ export default {
       repeatPassword: '',
       notification: false,
       consent: true,
-      buttonText: 'Зарегестрироваться'
+      birthday: '',
+      buttonText: 'Зарегистрироваться'
     }
   },
   validations() {
     return {
       name: {
         required,
-        minLength: minLength(3)
+        minLength: minLength(2)
       },
       lastName: {
         required,
-        minLength: minLength(4)
+        minLength: minLength(2)
       },
-      patronymic: {},
+      patronymic: {
+        minLength: minLength(2)
+      },
       email: {
         required,
         email
       },
       phone: {
         required,
-        numeric,
-        minLength: minLength(10)
+        regexPhone
       },
       password: {
         required,
@@ -190,6 +218,10 @@ export default {
       notification: {},
       consent: {
         required,
+      },
+      birthday: {
+        required,
+        regexBirthday
       }
     }
   },
@@ -202,16 +234,16 @@ export default {
         try {
           const response = await axios.post('http://127.0.0.1:5000/api/auth/registration', {
             headers: {'Content-type': 'application/json'},
-            name: this.v$.name,
-            lastName: this.v$.lastName,
-            patronymic: this.v$.patronymic,
-            phone: this.v$.phone,
-            email: this.v$.email,
-            password: this.v$.password,
-            birthday: new Date(2011, 0, 1)
-            // notification: this.v$.notification,
+            name: this.v$.name.$model,
+            lastName: this.v$.lastName.$model,
+            patronymic: this.v$.patronymic.$model,
+            phone: this.v$.phone.$model,
+            email: this.v$.email.$model,
+            password: this.v$.password.$model,
+            birthday: this.v$.birthday.$model
           })
           console.log(response)
+          this.$router.push({ name: 'auth' });
         } catch (error) {
           alert(error)
         } finally {

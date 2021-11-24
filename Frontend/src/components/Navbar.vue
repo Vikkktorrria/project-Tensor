@@ -5,7 +5,24 @@
       <div class="navigation__line"></div>
       <div class="navigation__line"></div>
     </div>
-    <div class="navigation__bar">
+    <div class="navigation__bar" v-if="isAuth">
+      <nav-el
+          @click="$router.push('/profile')"
+          :is-active="isSelected('/profile')"
+          :class-icon="'user-icon'"
+      >Профиль</nav-el>
+      <nav-el
+          @click="$router.push('/notification')"
+          :is-active="isSelected('/notification')"
+          :class-icon="'notification-icon'"
+      >Уведомления</nav-el>
+      <nav-el
+          @click="$router.push('/settings')"
+          :is-active="isSelected('/settings')"
+          :class-icon="'settings-icon'"
+      >Настройки</nav-el>
+    </div>
+    <div class="navigation__bar" v-if="!isAuth">
       <nav-el
           @click="$router.push('/registration')"
           :is-active="isSelected('/registration')"
@@ -27,6 +44,7 @@
 
 <script>
 import NavEl from "./NavEl";
+import {mapState} from 'vuex';
 export default {
   components: {
     NavEl
@@ -35,9 +53,16 @@ export default {
   methods: {
     isSelected(href) { return this.$route.href === href }
   },
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth,
+    })
+  }
 }
 </script>
 
-<style lang="scss" src="@/assets/style/style.scss">
-
+<style lang="scss" src="@/assets/style/style.scss" scoped>
+.row {
+  padding-top: 20px;
+}
 </style>
