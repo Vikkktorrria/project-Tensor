@@ -66,7 +66,7 @@ textarea {
       -ms-flex-pack: justify;
           justify-content: space-between;
   color: #152f70;
-  height: 10%;
+  min-height: 10%;
   padding-top: 20px;
 }
 
@@ -205,8 +205,9 @@ textarea {
 }
 
 .content {
+  padding-left: 24px !important;
   height: 90vh;
-  margin: 0;
+  margin: 0 0 0 0;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   background-color: rgba(255, 255, 255, 0.95);
@@ -450,7 +451,7 @@ textarea {
 }
 
 .form__input::-webkit-input-placeholder {
-  color: #35538d;
+  color: rgba(53, 83, 141, 0.5);
 }
 
 .form__text-p {
@@ -514,6 +515,14 @@ textarea {
   width: 100%;
 }
 
+.form_card__input-settings {
+  width: 75%;
+}
+
+.form__el-text {
+  width: 25%;
+}
+
 .form_card__el {
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
@@ -522,7 +531,7 @@ textarea {
 }
 
 .form_card__button .btn {
-  padding: 5px;
+  padding: 5px 15px 5px 15px;
   margin: 0;
   font-size: 16px;
 }
@@ -671,6 +680,9 @@ textarea {
   .swiper-button-next, .swiper-button-prev {
     display: none;
   }
+  .form__el-text {
+    width: 35%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -689,6 +701,16 @@ textarea {
   .swiper__slide-image img {
     width: 90%;
     height: 200px;
+  }
+  .form__el-text {
+    font-size: 16px;
+    width: 60%;
+  }
+  .form__input {
+    font-size: 16px;
+  }
+  .form_card__input-settings {
+    width: 45%;
   }
 }
 /*# sourceMappingURL=style.css.map */
