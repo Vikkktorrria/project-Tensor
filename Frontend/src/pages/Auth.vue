@@ -80,20 +80,19 @@ export default {
         console.log('error')
       } else {
         try {
-          const response = await axios.post('http://127.0.0.1:5000/api/auth/auth', {
-            headers: {'Content-type': 'application/json'},
-            username: this.v$.email.$model,
-            password: this.v$.password.$model,
+          const username = this.v$.email.$model
+          const password = this.v$.password.$model
+          const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64')
+          console.log(token)
+          const response = await axios.get('http://127.0.0.1:5000/api/auth/auth', {
+            headers: {'Authorization': `Basic ${token}`}
           })
           console.log(response)
           localStorage.setItem('token', response.data.token)
           this.setAuth(true)//после запроса
           this.$router.push({ name: 'notification' });//после запроса
-          // headers: {
-          //   Authorization: `Bearer ${localStorage.getItem('token')}`
-          // }
         } catch (error) {
-          alert(error)
+          console.log(error)
         } finally {
 
         }

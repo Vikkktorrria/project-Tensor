@@ -1,6 +1,17 @@
 <template>
-  <nav class="navigation active col-lg-2">
-    <div class="navigation__burger active">
+  <nav
+       :class="{
+          'navigation col-lg-2 active': burgerIsActive,
+          'navigation col-lg-2': !burgerIsActive
+        }"
+    >
+    <div
+        :class="{
+          'navigation__burger active': burgerIsActive,
+          'navigation__burger': !burgerIsActive,
+        }"
+        @click="changeNav"
+    >
       <div class="navigation__line"></div>
       <div class="navigation__line"></div>
       <div class="navigation__line"></div>
@@ -50,14 +61,23 @@ export default {
     NavEl
   },
   name: "NavbarAuth",
+  data() {
+    return {
+      burgerIsActive: false
+    }
+  },
   methods: {
-    isSelected(href) { return this.$route.href === href }
+    isSelected(href) { return this.$route.href === href },
+    changeNav() {
+      console.log('click')
+      this.burgerIsActive = !this.burgerIsActive
+    }
   },
   computed: {
     ...mapState({
       isAuth: state => state.auth.isAuth,
-    })
-  }
+    }),
+  },
 }
 </script>
 

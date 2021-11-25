@@ -1,5 +1,5 @@
 <template>
-  <h1>Настройки</h1>
+  <h1 class="h1-text">Настройки</h1>
   <div class="container">
     <div class="row">
       <div class="card card_no-border col-md-12">
