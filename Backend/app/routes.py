@@ -56,8 +56,9 @@ def register():
     mail = request.json['email']
     password = generate_password_hash(request.json['password'], method ='sha256')
     phone_number = request.json['phone']
+    avatar_img = None
 
-    user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number)
+    user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)
     db.session.commit()
     return make_response('User successful registered', 200)
