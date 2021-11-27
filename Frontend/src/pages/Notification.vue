@@ -1,4 +1,4 @@
-<template>
+<template v-if="isAuth">
   <div class="container">
 <!--    <swiper></swiper>-->
     <div class="row">
@@ -29,8 +29,14 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
 export default {
-  name: "Notification"
+  name: "Notification",
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth
+    })
+  },
 }
 </script>
 

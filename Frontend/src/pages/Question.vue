@@ -1,10 +1,16 @@
-<template>
+<template v-if="!isAuth">
 
 </template>
 
 <script>
+import {mapMutations, mapState} from 'vuex';
 export default {
-  name: "Question"
+  name: "Question",
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth
+    }),
+  }
 }
 </script>
 

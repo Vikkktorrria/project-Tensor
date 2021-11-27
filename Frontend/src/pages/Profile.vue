@@ -1,16 +1,22 @@
-<template>
+<template v-if="isAuth">
   <div class="container">
     <div class="row">
-      <div class="card card_user col-2">
-        <img class="card_user__image" src="../assets/image/user-icon.png" alt="Татьяна">
+      <div class="col-2">
+        <div class="card card_user">
+            <img v-if="!currentUser.avatar" class="card_user__image" src="../assets/image/user-icon.png" alt="Татьяна">
+            <img v-if="currentUser.avatar" class="card_user__image" :src="currentUser.avatar" alt="Татьяна">
+        </div>
+        <input type="file" multiple>
       </div>
       <div class="card card_no-border col-md-8">
         <div class="card__title">
-          {{currentUser.name}}
-        </div>
-        <div class="card__text">
-          {{currentUser.age}} лет
-        </div>
+          {{currentUser.name}} {{currentUser.surname}} {{currentUser.patronymic}},
+          {{currentUser.age}} {{currentUser.ageText}}
+          <br>
+          Email: {{currentUser.email}}
+          <br>
+          Телефон: {{currentUser.phone}}
+        </div>s
       </div>
     </div>
   </div>
@@ -47,7 +53,8 @@ export default {
   },
   computed: {
     ...mapState({
-      currentUser: state => state.auth.currentUser
+      currentUser: state => state.auth.currentUser,
+      isAuth: state => state.auth.isAuth
     })
   },
   methods: {
@@ -57,4 +64,15 @@ export default {
 </script>
 
 <style scoped>
+.card_user {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  width: 120px;
+  height: 120px;
+}
+
+.card_user__image {
+  width: 100%;
+  height: 100%;
+}
 </style>

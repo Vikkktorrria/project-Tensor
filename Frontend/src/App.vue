@@ -34,7 +34,7 @@
 import Navbar from "./components/Navbar";
 import 'bootstrap/dist/css/bootstrap.css'
 import FooterComponent from "./components/FooterComponent";
-import {mapMutations, mapState} from 'vuex';
+import {mapMutations, mapActions, mapState} from 'vuex';
 export default {
   components: {
     Navbar, FooterComponent
@@ -49,9 +49,13 @@ export default {
     ...mapMutations({
       setAuth: 'auth/setAuth',
     }),
+    ...mapActions({
+      userData: 'auth/userData',
+    }),
     checkAuth() {
       if(localStorage.getItem('token')) {
         this.setAuth(true)
+        this.userData()
       } else {
         this.setAuth(false)
       }

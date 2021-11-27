@@ -1,4 +1,4 @@
-<template>
+<template v-if="isAuth">
   <h1 class="h1-text">Настройки</h1>
   <div class="container">
     <div class="row">
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex';
+import {mapMutations, mapState} from 'vuex';
 export default {
   name: "Settings",
   methods: {
@@ -99,6 +99,11 @@ export default {
       localStorage.clear();
       this.$router.push({ name: 'auth' });
     }
+  },
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth
+    }),
   }
 }
 </script>

@@ -1,4 +1,4 @@
-<template>
+<template v-if="!isAuth">
   <h1 class="h1-text">Вход</h1>
   <div class="content__container">
     <form class="form" @submit.prevent="submitHandler">
@@ -46,7 +46,7 @@
 import {numeric, required, email, minLength, helpers} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
-import {mapMutations} from 'vuex';
+import {mapMutations, mapState} from 'vuex';
 export default {
   name: "Registration",
   data() {
@@ -93,8 +93,9 @@ export default {
           this.setAuth(true)
           this.$router.push({ name: 'notification' });
         } catch (error) {
+          console.log(error)
           console.log(error.response)
-          alert(error.response.data)
+          alert(error.response)
         } finally {
 
         }
@@ -103,6 +104,11 @@ export default {
     updateInput(e) {
       this.$emit('update:value', e.target.value);
     }
+  },
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth
+    }),
   }
 }
 </script>

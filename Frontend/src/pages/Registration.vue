@@ -1,4 +1,4 @@
-<template>
+<template v-if="!isAuth">
   <h1 class="h1-text">Регистрация</h1>
   <div class="content__container">
     <form class="form" @submit.prevent="submitHandler">
@@ -166,6 +166,7 @@
 import {numeric, required, email, minLength, minValue, helpers} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
+import {mapState} from "vuex";
 const regexBirthday = helpers.regex(/^\d{4}[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/)
 const regexPhone = helpers.regex(/^\+?\d{1,3}?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\-?\d\d$/)
 export default {
@@ -225,6 +226,7 @@ export default {
       }
     }
   },
+
   methods: {
     async submitHandler(e) {
       this.v$.$touch()
@@ -255,6 +257,11 @@ export default {
     updateInput(e) {
       this.$emit('update:value', e.target.value);
     }
+  },
+  computed: {
+    ...mapState({
+      isAuth: state => state.auth.isAuth
+    }),
   }
 }
 </script>
