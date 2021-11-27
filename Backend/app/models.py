@@ -83,9 +83,10 @@ class Passport(db.Model):
     # связи
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
-    def __init__(self, number, series):
+    def __init__(self, number, series, user_id):
         self.number = number
         self.series = series
+        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Passport

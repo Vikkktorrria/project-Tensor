@@ -8,7 +8,7 @@ from functools import wraps
 import uuid, jwt
 
 from app import app, db
-from app.models import User, user_schema
+from app.models import User, Passport, user_schema, passport_schema
 
 
 # декоратор для проверки токена авторизации
@@ -17,8 +17,10 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization']
+            token = token.split(" ")[1]
+
         
         if not token:
             return jsonify({'message': 'Token is missing'}), 401
@@ -37,13 +39,38 @@ def token_required(f):
 @app.route('/api/user/info', methods = ['GET']) 
 @token_required
 def get_one_user(current_user):
-    user = User.query.filter_by(public_id=current_user.public_id).first()
-
-    if not user:
-        return make_response('No user with your id', 404, {'message':'Token error!'})
-
-    result = user_schema.dump(user)
+    result = user_schema.dump(current_user)
     return jsonify(result)
+
+
+@app.route('/api/user/change/mail', methods = ['PUT'])
+@token_required
+def change_mail(current_user):
+    return ''
+
+
+@app.route('/api/user/change/password', methods = ['PUT'])
+@token_required
+def change_password(current_user):
+    return ''
+
+
+@app.route('/api/user/passport', methods = ['POST'])
+@token_required
+def add_passport(current_user):
+    series = request.json['passportSeries']
+    number = request.json['passportNumber']
+    user_id = current_user.id
+
+    #added_passport = Passport.query.filter_by(user_id = user_id).first()
+    #if added_passport:
+    #    return make_response('Passport is already added', 409, {'message':'К вашей учётной записи уже добавлен паспорт!'})
+
+    passport = Passport(number, series, user_id)
+    db.session.add(passport)
+    db.session.commit()
+
+    return make_response('Passport succesfully added', 200)
 
 # регистрация пользователя
 @app.route('/api/auth/registration', methods = ['POST'])
@@ -58,13 +85,14 @@ def register():
     phone_number = request.json['phone']
     avatar_img = None
 
-    added_user = User.query.filter_by(mail).first()
+    # обработка ошибки существующей почты, номера телефона
+    added_user = User.query.filter_by(mail=mail).first()
     if added_user:
-        return make_response('Registration failed', 409, {'message':'The user with the entered mail already exists'})
+        return make_response('Registration failed', 409, {'message':'Пользователь с такой почтой уже существует!'})
 
-    added_user = User.query.filter_by(phone_number).first()
+    added_user = User.query.filter_by(phone_number=phone_number).first()
     if added_user:
-        return make_response('Registration failed', 409, {'message':'Current phone number is already used!'})
+        return make_response('Registration failed', 409, {'message':'Данный номер телефона уже привязан к другой учетной записи!'})
 
     user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)
