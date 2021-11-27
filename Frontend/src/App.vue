@@ -13,9 +13,10 @@
       </div>
       <div class="name">
         <div class="name__text">
-          Здравствуйте, Татьяна!
+          Здравствуйте, {{ this.currentUser.name }}!
         </div>
         <div class="name__icon">
+
         </div>
       </div>
     </header>
@@ -41,6 +42,7 @@ export default {
   computed: {
     ...mapState({
       isAuth: state => state.auth.isAuth,
+      currentUser: state => state.auth.currentUser
     })
   }
 }

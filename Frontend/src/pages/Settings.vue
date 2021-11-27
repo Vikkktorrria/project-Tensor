@@ -96,6 +96,7 @@ export default {
     }),
     logout() {
       this.setAuth(false)
+      localStorage.clear();
       this.$router.push({ name: 'auth' });
     }
   }

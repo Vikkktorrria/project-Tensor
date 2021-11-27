@@ -206,7 +206,7 @@ textarea {
 
 .content {
   padding-left: 24px !important;
-  height: 90vh;
+  height: 86.5vh;
   margin: 0 0 0 0;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
@@ -276,9 +276,8 @@ textarea {
           flex-direction: column;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  min-width: none;
-  border: none;
-  border-radius: none;
+  min-width: 0;
+  border: none !important;
   margin: 20px auto;
   font-size: 20px;
   color: #35538d;
@@ -436,6 +435,8 @@ textarea {
 .form small {
   display: none;
   position: absolute;
+  font-size: 14px;
+  font-weight: lighter;
   bottom: -20px;
 }
 
@@ -496,7 +497,7 @@ textarea {
   display: block;
 }
 
-.form .success input {
+.form .success input, .form .success textarea {
   border-color: #2ecc71;
 }
 
@@ -505,7 +506,7 @@ textarea {
   color: #e74c3c;
 }
 
-.form .error input {
+.form .error input, .form .error textarea {
   border-color: #e74c3c;
 }
 
