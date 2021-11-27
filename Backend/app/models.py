@@ -39,7 +39,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
-            'id', 'public_id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'password', 'phone_number',
+            'id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
             'avatar_img', 'created_on', 'updated_on')
 
 
@@ -52,20 +52,21 @@ users_schema = UserSchema(many=True)
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text(500), nullable=False)
-    image = db.Column(db.String(45), nullable=False)  # я пока не знаю, что делать с картинкой
+    article_img = db.Column(db.BLOB)
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     # связи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, text, image):
+    def __init__(self, text, image, article_img):
         self.text = text
         self.image = image
+        self.article_img = NULL
 
 
 # класс для работы с полями в таблице Article
 class ArticleSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'text', 'image', 'created_on')
+        fields = ('id', 'text', 'image', 'article_img', 'created_on')
 
 
 # объекты для отправки и приёмов запросов
