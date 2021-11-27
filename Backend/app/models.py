@@ -32,7 +32,7 @@ class User(db.Model):
         self.mail = mail
         self.password = password
         self.phone_number = phone_number
-        self.avatar_img = NULL
+        self.avatar_img = avatar_img
 
 
 # класс для работы с полями в таблице User
@@ -60,7 +60,7 @@ class Article(db.Model):
     def __init__(self, text, image, article_img):
         self.text = text
         self.image = image
-        self.article_img = NULL
+        self.article_img = article_img
 
 
 # класс для работы с полями в таблице Article
