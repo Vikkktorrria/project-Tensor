@@ -10,6 +10,7 @@ import uuid, jwt
 from app import app, db
 from app.models import User, user_schema
 
+MAX_CONTENT_LENGTH = 1024 * 1024  # максимальный размер картинки
 
 # декоратор для проверки токена авторизации
 def token_required(f):
