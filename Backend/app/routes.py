@@ -58,6 +58,14 @@ def register():
     phone_number = request.json['phone']
     avatar_img = None
 
+    added_user = User.query.filter_by(mail).first()
+    if added_user:
+        return make_response('Registration failed', 409, {'message':'The user with the entered mail already exists'})
+
+    added_user = User.query.filter_by(phone_number).first()
+    if added_user:
+        return make_response('Registration failed', 409, {'message':'Current phone number is already used!'})
+
     user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)
     db.session.commit()
