@@ -7,12 +7,11 @@ from flask_cors import CORS
 from functools import wraps
 import uuid, jwt
 
-
 app = Flask(__name__)
-CORS(app) #убираем ошибку CORS
+CORS(app)  # убираем ошибку CORS
 
 # подключение к MySQL
-app.config['SECRET_KEY'] = 'MEDCARD' # для кодирования информации
+app.config['SECRET_KEY'] = 'MEDCARD'  # для кодирования информации
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/medcard_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
