@@ -10,7 +10,6 @@ import uuid, jwt
 from app import app, db
 from app.models import User, user_schema
 
-MAX_CONTENT_LENGTH = 1024 * 1024  # максимальный размер картинки
 
 # декоратор для проверки токена авторизации
 def token_required(f):
@@ -54,7 +53,7 @@ def register():
     surname = request.json['lastName']
     patronymic = request.json['patronymic']
     b_date = request.json['birthday']
-    mail = request.json['mail']
+    mail = request.json['email']
     password = generate_password_hash(request.json['password'], method ='sha256')
     phone_number = request.json['phone']
 
@@ -71,7 +70,7 @@ def login():
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify', 401, {'message':'Login required!'})
 
-    user = User.query.filter_by(phone_number=auth.username).first()
+    user = User.query.filter_by(mail=auth.username).first()
 
     if not user:
         return make_response('Could not verify', 401, {'message':'Login required!'})
@@ -79,6 +78,8 @@ def login():
     if check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id': user.public_id, 'exp' : datetime.now()+timedelta(minutes=120)}, app.config['SECRET_KEY'])
 
-        return jsonify({'token': token.decode('UTF-8')})
+        result = user_schema.dump(user)
+
+        return jsonify({'token': token.decode('UTF-8'), 'user': result})
     
     return make_response('Could not verify', 401, {'message':'Login required!'})
