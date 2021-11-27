@@ -245,7 +245,8 @@ export default {
           console.log(response)
           this.$router.push({ name: 'auth' });
         } catch (error) {
-          alert(error)
+          console.log(error.response)
+          alert(error.response.data)
         } finally {
 
         }

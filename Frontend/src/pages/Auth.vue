@@ -93,7 +93,8 @@ export default {
           this.setAuth(true)
           this.$router.push({ name: 'notification' });
         } catch (error) {
-          console.log(error)
+          console.log(error.response)
+          alert(error.response.data)
         } finally {
 
         }

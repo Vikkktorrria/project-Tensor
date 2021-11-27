@@ -1,3 +1,4 @@
+import axios from "axios";
 
 
 export const authModule = {
@@ -17,6 +18,20 @@ export const authModule = {
                 name: user.name,
                 age: age,
             };
+        },
+    },
+    actions: {
+        async userData({state, commit}) {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/api/user/info',  {
+                    headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
+                })
+                commit('setUser', response.data)
+            } catch (error) {
+                console.log(error.response)
+                alert(error.response.data)
+            } finally {
+            }
         },
     },
     namespaced:true,

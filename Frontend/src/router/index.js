@@ -27,7 +27,7 @@ const routes = [
         path: '/notification',
         name: 'notification',
         component: Notification
-    },,
+    },
     {
         path: '/profile',
         name: 'profile',

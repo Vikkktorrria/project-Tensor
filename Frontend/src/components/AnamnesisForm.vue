@@ -56,16 +56,15 @@ export default {
         console.log('error')
       } else {
         try {
-          console.log('yes')
-          // const response = await axios.get('http://127.0.0.1:5000/api/user/anamnesis', {
-          //   headers: {Authorization:`Bearer ${localStorage.getItem('token')}`}
-          // })
-          // console.log(response)
-          // localStorage.setItem('token', response.data.token)
-          // this.setAuth(true)//после запроса
-          // this.$router.push({ name: 'notification' });//после запроса
+          const response = await axios.post('http://127.0.0.1:5000/api/user/anamnesis', {
+            anamnesis: this.anamnesis,
+          }, {
+            headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
+          })
+          console.log(response)
         } catch (error) {
-          console.log(error)
+          console.log(error.response)
+          alert(error.response.data)
         } finally {
 
         }

@@ -89,15 +89,16 @@ export default {
         console.log('error')
       } else {
         try {
-          console.log('yes')
           const response = await axios.post('http://127.0.0.1:5000/api/user/passport', {
+            passportSeries: this.passportSeries,
+            passportNumber: this.passportId
+          }, {
             headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
-            passportSeries: passportSeries,
-            passportNumder: passportId
           })
           console.log(response)
         } catch (error) {
-          console.log(error)
+          console.log(error.response)
+          alert(error.response.data)
         } finally {
 
         }
