@@ -1,28 +1,29 @@
 <template>
-  <div class="card card_no-border col-md-5">
+  <div class="card card_no-border col-md-12">
     <h3 class="card__title">
-      Снилс
+      E-mail
     </h3>
     <div class="card__text">
-      <form class="form form_card" @submit.prevent="submitHandlerSnils">
+      <form class="form form_card"  @submit.prevent="submitHandlerEmail">
         <div
             class="form__el form_card__el"
             :class="{
-                  'form__el form_card__el error': v$.snils.$error,
-                  'form__el form_card__el success': !v$.snils.$error && v$.snils.$dirty
-                }"
+          'form__el form_card__el error': v$.email.$error,
+          'form__el form_card__el success': !v$.email.$error && v$.email.$dirty
+        }"
         >
           <div class="form__el-text">
-            Номер:
+            Введите почту:
           </div>
           <div class="form__el-input">
             <input
                 type="text"
-                class="form__input form_card__input"
-                placeholder="111222333 44"
-                v-model.trim="v$.snils.$model"
+                class="form__input form_card__input form_card__input-settings"
+                placeholder="name@mail.ru"
+                v-model.trim="v$.email.$model"
             >
-            <small v-if="v$.snils.minLength">Минимум 11 цифр</small>
+            <small v-if="v$.email.$model === ''">Поле почта не может быть пустым</small>
+            <small v-if="v$.email.email.$invalid">Поле почта некорректно</small>
           </div>
         </div>
         <div class="form__button form_card__button">
@@ -36,36 +37,35 @@
 </template>
 
 <script>
-import {numeric, required, email, minLength, helpers} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
+import {email, required} from "@vuelidate/validators";
 import axios from "axios";
-const regexSnils = helpers.regex(/^(?!^0+$)[a-zA-Z0-9]{3,20}$/);
+
 export default {
-  name: "SnilsForm",
+  name: "ChangeEmailForm",
   data() {
     return {
       v$: useVuelidate(),
-      snils: '',
+      email: '',
     }
   },
   validations() {
     return {
-      snils: {
+      email: {
         required,
-        numeric,
-        minLength: minLength(11)
-      }
+        email
+      },
     }
   },
   methods: {
-    async submitHandlerSnils(e) {
+    async submitHandlerEmail(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
         console.log('error')
       } else {
         try {
-          const response = await axios.post('http://127.0.0.1:5000/api/user/snils', {
-            snils: this.snils,
+          const response = await axios.put('http://127.0.0.1:5000/api/user/change/email', {
+            email: this.email
           }, {
             headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
           })
@@ -82,14 +82,12 @@ export default {
 </script>
 
 <style scoped>
-.form__el-input {position: relative}
+.form__input {width: 95%;}
+.form__el-input {
+  width: 100%;
+  position: relative
+}
 small {
   left: 10px;
-}
-.form_card__input {
-  width: 90%;
-}
-.card {
-  justify-content: space-between;
 }
 </style>

@@ -28,6 +28,21 @@
           :class-icon="'notification-icon'"
       >Уведомления</nav-el>
       <nav-el
+          @click="$router.push('/news')"
+          :is-active="isSelected('/news')"
+          :class-icon="'news-icon'"
+      >Новости</nav-el>
+      <nav-el
+          @click="$router.push('/note')"
+          :is-active="isSelected('/note')"
+          :class-icon="'note-icon'"
+      >Запись</nav-el>
+      <nav-el
+          @click="$router.push('/health')"
+          :is-active="isSelected('/health')"
+          :class-icon="'visits-icon'"
+      >Здоровье</nav-el>
+      <nav-el
           @click="$router.push('/settings')"
           :is-active="isSelected('/settings')"
           :class-icon="'settings-icon'"
@@ -81,7 +96,7 @@ export default {
 }
 </script>
 
-<style lang="scss" src="@/assets/style/style.scss" scoped>
+<style lang="css" src="@/assets/style/style.css" scoped>
 .row {
   padding-top: 20px;
 }

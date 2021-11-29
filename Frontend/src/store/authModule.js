@@ -36,7 +36,8 @@ export const authModule = {
                 email: user.mail,
                 phone: user.phone_number,
                 ageText: txt,
-                avatar: user.avatar_img
+                avatar: 'http://127.0.0.1:5000/image/' + user.public_id,
+                publicId: user.public_id
             };
         },
     },
@@ -47,9 +48,12 @@ export const authModule = {
                     headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
                 })
                 commit('setUser', response.data)
+                console.log(response.data)
             } catch (error) {
                 console.log(error)
                 alert('Проблема авторизации')
+                if (!this.isAuth)
+                    this.$router.push({ name: 'notification' });
             } finally {
             }
         },

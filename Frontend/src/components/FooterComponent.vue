@@ -15,13 +15,13 @@ export default {
 }
 </script>
 
-<style scoped lang="scss" >
+<style scoped lang="css" >
 .footer {
   margin-bottom: 20px;
-  &__text {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-  }
+}
+.footer__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

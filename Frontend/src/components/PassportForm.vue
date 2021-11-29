@@ -97,8 +97,7 @@ export default {
           })
           console.log(response)
         } catch (error) {
-          console.log(error.response)
-          alert(error.response.data)
+          alert(error.request.response)
         } finally {
 
         }

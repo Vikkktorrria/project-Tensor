@@ -124,8 +124,7 @@
             v-model.trim="v$.repeatPassword.$model"
         >
         <small v-if="v$.repeatPassword.$model === ''">Поле повторный пароль не может быть пустым</small>
-        <small v-if="v$.password.$model !== v$.repeatPassword.$model && v$.repeatPassword.$model !== ''">Пароль не
-          совпадает</small>
+        <small v-if="v$.password.$model !== v$.repeatPassword.$model && v$.repeatPassword.$model !== ''">Пароль не совпадает</small>
       </div>
       <div class="form__el form__el_checkbox">
         <input

@@ -5,6 +5,9 @@ import Question from "../pages/Question";
 import Notification from "../pages/Notification";
 import Settings from "../pages/Settings";
 import Profile from "../pages/Profile";
+import Health from "../pages/Health";
+import News from "../pages/News";
+import Note from "../pages/Note";
 
 
 const routes = [
@@ -32,6 +35,21 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: Profile
+    },
+    {
+        path: '/health',
+        name: 'health',
+        component: Health
+    },
+    {
+        path: '/news',
+        name: 'news',
+        component: News
+    },
+    {
+        path: '/note',
+        name: 'note',
+        component: Note
     },
     {
         path: '/settings',
