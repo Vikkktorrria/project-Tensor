@@ -244,10 +244,10 @@ export default {
             birthday: this.v$.birthday.$model
           })
           console.log(response)
-          this.$router.push({ name: 'auth' });
+          await this.$router.push({ name: 'auth' });
         } catch (error) {
           console.log(error.response)
-          alert(error.response.data)
+          alert(error.response.message)
         } finally {
 
         }

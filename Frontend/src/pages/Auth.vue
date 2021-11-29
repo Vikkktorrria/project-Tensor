@@ -91,7 +91,7 @@ export default {
           localStorage.setItem('token', response.data.token)
           this.setUser(response.data.user)
           this.setAuth(true)
-          this.$router.push({ name: 'notification' });
+          await  this.$router.push({ name: 'notification' });
         } catch (error) {
           console.log(error)
           console.log(error.response)

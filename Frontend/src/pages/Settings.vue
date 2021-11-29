@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setAuth: 'auth/setAuth'
+      setAuth: 'auth/setAuth',
     }),
     logout() {
       this.setAuth(false)
@@ -46,9 +46,9 @@ export default {
   },
   computed: {
     ...mapState({
-      isAuth: state => state.auth.isAuth
+      isAuth: state => state.auth.isAuth,
     }),
-  }
+  },
 }
 </script>
 

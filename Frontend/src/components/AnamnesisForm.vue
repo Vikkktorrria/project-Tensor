@@ -16,6 +16,7 @@
               class="form__input form_card__textarea"
               rows="10"
               v-model.trim="v$.anamnesis.$model"
+              v-model="currentUser.anamnesis"
           >
           </textarea>
           <small v-if="v$.anamnesis.required">Введите данные</small>
@@ -34,12 +35,19 @@
 import {numeric, required, email, minLength, maxLength} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
+import {mapActions, mapState} from "vuex";
 export default {
   name: "AnamnesisForm",
   data() {
     return {
       v$: useVuelidate(),
       anamnesis: '',
+    }
+  },
+  props: {
+    currentUser: {
+      type: Object,
+      required: true
     }
   },
   validations() {
@@ -50,6 +58,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      checkAuth: 'auth/checkAuth'
+    }),
     async submitHandlerAnamnesis(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
@@ -61,7 +72,7 @@ export default {
           }, {
             headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
           })
-          console.log(response)
+          await this.checkAuth()
         } catch (error) {
           console.log(error.response)
           alert(error.response.data)

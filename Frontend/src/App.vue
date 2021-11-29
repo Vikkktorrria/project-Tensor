@@ -42,24 +42,25 @@ export default {
   computed: {
     ...mapState({
       isAuth: state => state.auth.isAuth,
-      currentUser: state => state.auth.currentUser
+      currentUser: state => state.auth.currentUser,
     })
   },
   methods: {
     ...mapMutations({
       setAuth: 'auth/setAuth',
+      checkAuth: 'auth/checkAuth'
     }),
     ...mapActions({
-      userData: 'auth/userData',
+      userData: 'auth/userData'
     }),
-    checkAuth() {
-      if(localStorage.getItem('token')) {
-        this.setAuth(true)
-        this.userData()
-      } else {
-        this.setAuth(false)
-      }
-    }
+    // checkAuth() {
+    //   if(localStorage.getItem('token')) {
+    //     this.setAuth(true)
+    //     this.userData()
+    //   } else {
+    //     this.setAuth(false)
+    //   }
+    // }
   },
   mounted() {
     this.checkAuth()

@@ -1,7 +1,12 @@
 <template>
-  <div class="card card_no-border col-md-5">
+  <div
+      :class="{
+        'card card_no-border col-md-5': !currentUser.snils,
+        'card card_no-border green col-md-5': currentUser.snils
+      }"
+  >
     <h3 class="card__title">
-      Снилс
+      СНИЛС
     </h3>
     <div class="card__text">
       <form class="form form_card" @submit.prevent="submitHandlerSnils">
@@ -12,10 +17,10 @@
                   'form__el form_card__el success': !v$.snils.$error && v$.snils.$dirty
                 }"
         >
-          <div class="form__el-text">
+          <div class="form__el-text" v-if="!currentUser.snils">
             Номер:
           </div>
-          <div class="form__el-input">
+          <div class="form__el-input" v-if="!currentUser.snils">
             <input
                 type="text"
                 class="form__input form_card__input"
@@ -24,8 +29,11 @@
             >
             <small v-if="v$.snils.minLength">Минимум 11 цифр</small>
           </div>
+          <div class="form__el-input" v-if="currentUser.snils">
+            <p>{{currentUser.snils}}</p>
+          </div>
         </div>
-        <div class="form__button form_card__button">
+        <div class="form__button form_card__button" v-if="!currentUser.snils">
           <button class="btn">
             Изменить
           </button>
@@ -39,6 +47,7 @@
 import {numeric, required, email, minLength, helpers} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
+import {mapActions, mapState} from "vuex";
 const regexSnils = helpers.regex(/^(?!^0+$)[a-zA-Z0-9]{3,20}$/);
 export default {
   name: "SnilsForm",
@@ -46,6 +55,12 @@ export default {
     return {
       v$: useVuelidate(),
       snils: '',
+    }
+  },
+  props: {
+    currentUser: {
+      type: Object,
+      required: true
     }
   },
   validations() {
@@ -58,6 +73,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      checkAuth: 'auth/checkAuth'
+    }),
     async submitHandlerSnils(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
@@ -70,6 +88,7 @@ export default {
             headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
           })
           console.log(response)
+          await this.checkAuth()
         } catch (error) {
           alert(error.request.response)
         } finally {
@@ -91,5 +110,23 @@ small {
 }
 .card {
   justify-content: space-between;
+}
+.green {
+  background: #C7E0C5;
+}
+.green h3 {
+  display: flex;
+  justify-content: center;
+}
+.green>div, .green>div>form, .green>div>form>div {
+  height: 100%;
+  weight: 100%;
+}
+.green>div>form>div {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  font-size: 28px;
 }
 </style>

@@ -15,7 +15,7 @@
           <div class="form__el-text">
             Серия:
           </div>
-          <div class="form__el-input">
+          <div class="form__el-input" v-if="!currentUser.passport.series">
             <input
                 type="text"
                 class="form__input form_card__input"
@@ -23,6 +23,9 @@
                 v-model.trim="v$.passportSeries.$model"
             >
             <small v-if="v$.passportSeries.minLength">Минимум 4 цифры</small>
+          </div>
+          <div class="form__el-input" v-if="currentUser.passport.series">
+            <p>{{currentUser.passport.series}}</p>
           </div>
         </div>
         <div
@@ -35,7 +38,7 @@
           <div class="form__el-text">
             Номер:
           </div>
-          <div class="form__el-input">
+          <div class="form__el-input" v-if="!currentUser.passport.number">
             <input
                 type="text"
                 class="form__input form_card__input"
@@ -44,8 +47,11 @@
             >
             <small v-if="v$.passportId.minLength">Минимум 6 цифр</small>
           </div>
+          <div class="form__el-input" v-if="currentUser.passport.number">
+            <p>{{currentUser.passport.number}}</p>
+          </div>
         </div>
-        <div class="form__button form_card__button">
+        <div class="form__button form_card__button" v-if="!currentUser.passport.number">
           <button class="btn">
             Сохранить
           </button>
@@ -59,6 +65,7 @@
 import {numeric, required, minLength} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
+import {mapActions, mapState} from "vuex";
 export default {
   name: "PassportForm",
   data() {
@@ -66,6 +73,12 @@ export default {
       v$: useVuelidate(),
       passportSeries: '',
       passportId: '',
+    }
+  },
+  props: {
+    currentUser: {
+      type: Object,
+      required: true
     }
   },
   validations() {
@@ -83,6 +96,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      checkAuth: 'auth/checkAuth'
+    }),
     async submitHandlerPassport(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
@@ -96,6 +112,7 @@ export default {
             headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
           })
           console.log(response)
+          await this.checkAuth()
         } catch (error) {
           alert(error.request.response)
         } finally {
