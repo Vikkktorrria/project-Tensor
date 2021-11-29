@@ -14,7 +14,7 @@ class User(db.Model):
     phone_number = db.Column(db.String(45), nullable=False)
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)  # когда изменено
-    avatar_img = db.Column(db.BLOB)
+    avatar_img = db.Column(db.String(200))
     # отношения с другими таблицами
     article = db.relationship('Article', backref='user')
     doctor = db.relationship('Doctor', backref='user', uselist=False)
@@ -52,7 +52,7 @@ users_schema = UserSchema(many=True)
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text(500), nullable=False)
-    article_img = db.Column(db.BLOB)
+    article_img = db.Column(db.String(200))
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     # связи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
