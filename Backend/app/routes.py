@@ -6,14 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 from functools import wraps
 from urllib.request import urlopen
-import uuid, jwt, base64
+import uuid, jwt
 import os
-import socket
 
 from app import app, db
 from app.models import *
 
-UPLOAD_FOLDER = './app/upload'
+# проверить директорию
+UPLOAD_FOLDER = 'C:/Users/mauta/Desktop/project-Tensor-main/Backend/app/upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -41,13 +41,13 @@ def token_required(f):
 
 
 # получить img
-@app.route('/api/user/image/avatarsws', methods=['GET'])
-@token_required
-def get_img(current_user):
-    # reader_avatar = open('./app/upload/' + str(current_user.avatar_img))
-    return send_file(str('./upload/' + str(current_user.avatar_img)))
+@app.route('/user/image/<file_name>', methods=['GET'])
+def get_img(file_name):
+    with open(app.config['UPLOAD_FOLDER'] + '/' + file_name, 'rb') as file:
+        binaryData = file.read()
+    return Response(binaryData, mimetype='image/jpeg')
 
-
+# загрузить img
 @app.route('/api/user/upload/avatar', methods=['PUT'])
 @token_required
 def upload_image(current_user):
@@ -55,53 +55,39 @@ def upload_image(current_user):
     if not img:
         return make_response("Фото не загружено!", 400)
 
-    # filename = 'avatar_' + str(current_user.id)
     filename = img.filename
+    mimetype_reverse = filename[::-1].partition('.')[0] # определяем тип
+    mimetype = '.' + mimetype_reverse[::-1]
+
+    filename = 'avatar-' + str(current_user.id) + mimetype
+
     img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     current_user.avatar_img = filename
     db.session.commit()
     return make_response("Файл загружен", 200)
 
-
-# @app.route('/api/user/avatar', methods = ['PUT'])
-# @token_required
-# def upload_image(current_user):
-#     img = request.files['file']
-#     global_img = img
-#     if not img:
-#         return make_response("Фото не загружено!", 400)
-
-#     #data = base64.b64decode(img.read())
-
-#     data = img.encode(encoding='ansii', errors='ignore')
-#     # data = data.encode
-
-#     # img = urlopen('http://127.0.0.1:5000/image/' + current_user.public_id)
-
-#     file = open("test.txt", "w")
-#     file.write(str(data))
-#     file.close
-
-#     #current_user.avatar_img = img
-#     #db.session.commit()
-
-#     global_img = None
-#     return make_response(data, 200)
-
-# пример получения информации об авторизированном пользователе
+# получение информации об авторизированном пользователе
 @app.route('/api/user/info', methods=['GET'])
 @token_required
 def get_one_user(current_user):
     result = user_schema.dump(current_user)
-    return jsonify(result)
+    passport = Passport.query.filter_by(user_id = current_user.id).first()
+    snils = Snils.query.filter_by(user_id = current_user.id).first()
+    patient = Patient.query.filter_by(user_id = current_user.id).first()
+    return jsonify({'user': result, 'passport': {'series': passport.series, 'number':passport.number}, 'snils': snils.number, 'anamnesis': patient.anamnesis})
 
 
 # смена email
-@app.route('/api/user/change/mail', methods=['PUT'])
+@app.route('/api/user/change/email', methods=['PUT'])
 @token_required
 def change_mail(current_user):
-    return ''
+    new_email = request.json['email']
+
+    current_user.mail = new_email
+    db.session.commit()
+
+    return make_response('Адрес электронной почты успешно изменен', 200)
 
 
 # смена пароля
@@ -119,6 +105,39 @@ def change_password(current_user):
 
     return make_response('Пароль успено изменён', 200)
 
+
+@app.route('/api/user/diagnoses', methods=['GET'])
+@token_required
+def get_diagnoses(current_user):
+    return ''
+
+# добавление анамнеза
+@app.route('/api/user/anamnesis', methods=['POST'])
+@token_required
+def add_anamnesis(current_user):
+    anamnesis = request.json['anamnesis']
+    user_id = current_user.id
+
+    added_patient = Patient.query.filter_by(user_id=user_id).first()
+    if added_patient:
+        return edit_anamnesis()
+
+    patient = Patient(anamnesis, user_id)
+    db.session.add(patient)
+    db.session.commit()
+
+    return make_response('Анамнез успешно добавлен', 200)
+
+@token_required
+def edit_anamnesis(current_user):
+    anamnesis = request.json['anamnesis']
+    user_id = current_user.id
+
+    patient = Patient.query.filter_by(user_id=user_id).first()
+    patient.anamnesis = anamnesis
+    db.session.commit()
+
+    return make_response('Анамнез успешно обновлен', 200)
 
 # добавление СНИЛС
 @app.route('/api/user/snils', methods=['POST'])
@@ -177,8 +196,7 @@ def register():
 
     added_user = User.query.filter_by(phone_number=phone_number).first()
     if added_user:
-        return make_response('Registration failed', 409,
-                             {'message': 'Данный номер телефона уже привязан к другой учетной записи!'})
+        return make_response('Registration failed', 409, {'message': 'Данный номер телефона уже привязан к другой учетной записи!'})
 
     user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)

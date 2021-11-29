@@ -40,7 +40,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
-            'id', 'public_id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
+            'id', 'avatar_img', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
             'created_on', 'updated_on')
 
 
@@ -138,8 +138,9 @@ class Patient(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     note = db.relationship('Note', backref='patient')
 
-    def __init__(self, anamnesis):
+    def __init__(self, anamnesis, user_id):
         self.anamnesis = anamnesis
+        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Patient
@@ -156,7 +157,7 @@ patient_schema = PatientSchema(many=True)
 # класс таблицы Snils
 class Snils(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.Integer)
+    number = db.Column(db.String(20))
     created_on = db.Column(db.DateTime(), default=datetime.now)
     # связи
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
