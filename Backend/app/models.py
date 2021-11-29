@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from app import db, ma
 
+
 # класс таблицы User
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,8 +40,8 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
-            'id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
-            'avatar_img', 'created_on', 'updated_on')
+            'id', 'public_id', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
+            'created_on', 'updated_on')
 
 
 # объекты для отправки и приёмов запросов
@@ -160,8 +161,9 @@ class Snils(db.Model):
     # связи
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
-    def __init__(self, number):
+    def __init__(self, number, user_id):
         self.number = number
+        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Snils
