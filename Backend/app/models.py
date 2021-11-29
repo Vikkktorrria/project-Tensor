@@ -160,8 +160,9 @@ class Snils(db.Model):
     # связи
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
-    def __init__(self, number):
+    def __init__(self, number, user_id):
         self.number = number
+        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Snils
