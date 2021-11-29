@@ -75,6 +75,16 @@ def get_one_user(current_user):
     passport = Passport.query.filter_by(user_id = current_user.id).first()
     snils = Snils.query.filter_by(user_id = current_user.id).first()
     patient = Patient.query.filter_by(user_id = current_user.id).first()
+
+    if not passport:
+        passport = Passport(None, None, None)
+    
+    if not snils:
+        snils = Snils(None, None)
+
+    if not patient:
+        patient = Patient(None, None)
+
     return jsonify({'user': result, 'passport': {'series': passport.series, 'number':passport.number}, 'snils': snils.number, 'anamnesis': patient.anamnesis})
 
 
@@ -106,10 +116,24 @@ def change_password(current_user):
     return make_response('Пароль успено изменён', 200)
 
 
+@app.route('/api/news', methods=['GET'])
+def get_articles():
+    all = Article.query.all()
+    results = articles_schema.dump(all)
+    return jsonify(results)
+
+
 @app.route('/api/user/diagnoses', methods=['GET'])
 @token_required
 def get_diagnoses(current_user):
-    return ''
+    patient = Patient.query.filter_by(user_id = current_user.id).first()
+    all = Note.query.filter_by(patient_id = patient.id).all()
+    results = notes_schema.dump(all)
+    for val in results:
+        current_doctor = Doctor.query.filter_by(id = val['doctor_id']).first()
+        doctor = User.query.filter_by(id = current_doctor.user_id).first()
+        val['doctor'] = {'name': doctor.name, 'surname':doctor.surname, 'patronymic':doctor.patronymic}
+    return jsonify(results)
 
 # добавление анамнеза
 @app.route('/api/user/anamnesis', methods=['POST'])

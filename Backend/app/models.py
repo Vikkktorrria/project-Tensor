@@ -18,8 +18,6 @@ class User(db.Model):
     avatar_img = db.Column(db.String(200))
     # отношения с другими таблицами
     article = db.relationship('Article', backref='user')
-    doctor = db.relationship('Doctor', backref='user', uselist=False)
-    patient = db.relationship('Patient', backref='user', uselist=False)
     passport = db.relationship('Passport', backref='user', uselist=False)
     snils = db.relationship('Snils', backref='user', uselist=False)
     note = db.relationship('Note', backref='user', uselist=False)
@@ -52,27 +50,28 @@ users_schema = UserSchema(many=True)
 # класс таблицы Article
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
     text = db.Column(db.Text(500), nullable=False)
     article_img = db.Column(db.String(200))
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     # связи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, text, image, article_img):
+    def __init__(self, text, article_img, title):
         self.text = text
-        self.image = image
         self.article_img = article_img
+        self.title = title
 
 
 # класс для работы с полями в таблице Article
 class ArticleSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'text', 'image', 'article_img', 'created_on')
+        fields = ('id', 'text', 'article_img', 'created_on', 'title')
 
 
 # объекты для отправки и приёмов запросов
 article_schema = ArticleSchema()
-article_schema = ArticleSchema(many=True)
+articles_schema = ArticleSchema(many=True)
 
 
 # класс таблицы Passport
@@ -182,74 +181,29 @@ snils_schema = SnilsSchema(many=True)
 class Note(db.Model):
     # __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
+    recipe = db.Column(db.Text(500))
+    diagnosis = db.Column(db.Text(500))
     date_of_visit = db.Column(db.DateTime())
     created_on = db.Column(db.DateTime(), default=datetime.now)
     updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)
     # связи
-    recipe = db.relationship('Recipe', backref='note')
-    diagnosis = db.relationship('Diagnosis', backref='note')
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     doctor_id = db.Column(db.Integer(), db.ForeignKey('doctor.id'))
     patient_id = db.Column(db.Integer(), db.ForeignKey('patient.id'))
 
-    def __init__(self, date_of_visit):
+    def __init__(self, date_of_visit, user_id, doctor_id):
         self.date_of_visit = date_of_visit
+        self.user_id = user_id
+        self.doctor_id = doctor_id
 
 
 # класс для работы с полями в таблице Notes
 class NoteSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'date_of_visit', 'created_on', 'updated_on')
+        fields = ('id', 'date_of_visit', 'diagnosis', 'recipe', 'doctor_id')
 
 
 # объекты для отправки и приёмов запросов
 note_schema = NoteSchema()
-note_schema = NoteSchema(many=True)
+notes_schema = NoteSchema(many=True)
 
-
-# класс таблицы Diagnosis
-class Diagnosis(db.Model):
-    id= db.Column(db.Integer, primary_key=True)
-    inf_about_diagnosis = db.Column(db.Text(500))
-    created_on = db.Column(db.DateTime(), default=datetime.now)
-    updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)
-    # связи
-    note_id = db.Column(db.Integer(), db.ForeignKey('note.id'))
-
-    def __init__(self, inf_about_diagnosis):
-        self.inf_about_diagnosis = inf_about_diagnosis
-
-
-# класс для работы с полями в таблице Diagnosis
-class DiagnosisSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'inf_about_diagnosis', 'created_on', 'updated_on')
-
-
-# объекты для отправки и приёмов запросов
-diagnosis_schema = DiagnosisSchema()
-diagnosis_schema = DiagnosisSchema(many=True)
-
-
-# класс таблицы Recipe
-class Recipe(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    inf_about_recipe = db.Column(db.Text(500))
-    created_on = db.Column(db.DateTime(), default=datetime.now)
-    updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)
-    # связи
-    note_id = db.Column(db.Integer(), db.ForeignKey('note.id'))
-
-    def __init__(self, inf_about_recipe):
-        self.inf_about_recipe = inf_about_recipe
-
-
-# класс для работы с полями в таблице Recipe
-class RecipeSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'inf_about_recipe', 'created_on', 'updated_on')
-
-
-# объекты для отправки и приёмов запросов
-recipe_schema = RecipeSchema()
-recipe_schema = RecipeSchema(many=True)
