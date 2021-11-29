@@ -30,11 +30,11 @@ button {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 p {
-  margin: 0;
+  margin: 0 !important;
 }
 
 textarea {
@@ -184,7 +184,7 @@ textarea {
   background-size: cover;
 }
 
-.user-icon {
+.user-icon .registration-icon {
   background: url(../image/user-icon.png) no-repeat;
   background-size: cover;
 }
@@ -199,7 +199,7 @@ textarea {
   background-size: cover;
 }
 
-.enter-icon {
+.auth-icon {
   background: url(../image/enter-icon.png) no-repeat;
   background-size: cover;
 }
@@ -534,6 +534,16 @@ textarea {
   padding: 5px 15px 5px 15px;
   margin: 0;
   font-size: 16px;
+}
+
+/* Accordion */
+
+.accord__title {
+  font-size: 24px;
+}
+
+.accord__text {
+  font-size: 22px;
 }
 
 @media (max-width: 1400px) {
