@@ -47,6 +47,7 @@ def get_img(file_name):
         binaryData = file.read()
     return Response(binaryData, mimetype='image/jpeg')
 
+
 # загрузить img
 @app.route('/api/user/upload/avatar', methods=['PUT'])
 @token_required
@@ -56,7 +57,7 @@ def upload_image(current_user):
         return make_response("Фото не загружено!", 400)
 
     filename = img.filename
-    mimetype_reverse = filename[::-1].partition('.')[0] # определяем тип
+    mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
     mimetype = '.' + mimetype_reverse[::-1]
 
     filename = 'avatar-' + str(current_user.id) + mimetype
@@ -67,25 +68,28 @@ def upload_image(current_user):
     db.session.commit()
     return make_response("Файл загружен", 200)
 
+
 # получение информации об авторизированном пользователе
 @app.route('/api/user/info', methods=['GET'])
 @token_required
 def get_one_user(current_user):
     result = user_schema.dump(current_user)
-    passport = Passport.query.filter_by(user_id = current_user.id).first()
-    snils = Snils.query.filter_by(user_id = current_user.id).first()
-    patient = Patient.query.filter_by(user_id = current_user.id).first()
+    passport = Passport.query.filter_by(user_id=current_user.id).first()
+    snils = Snils.query.filter_by(user_id=current_user.id).first()
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
 
     if not passport:
         passport = Passport(None, None, None)
-    
+
     if not snils:
         snils = Snils(None, None)
 
     if not patient:
         patient = Patient(None, None)
 
-    return jsonify({'user': result, 'passport': {'series': passport.series, 'number':passport.number}, 'snils': snils.number, 'anamnesis': patient.anamnesis})
+    return jsonify(
+        {'user': result, 'passport': {'series': passport.series, 'number': passport.number}, 'snils': snils.number,
+         'anamnesis': patient.anamnesis})
 
 
 # смена email
@@ -116,6 +120,7 @@ def change_password(current_user):
     return make_response('Пароль успено изменён', 200)
 
 
+# получение информации о статье
 @app.route('/api/news', methods=['GET'])
 def get_articles():
     all = Article.query.all()
@@ -123,17 +128,19 @@ def get_articles():
     return jsonify(results)
 
 
+# получение информации об диагнозе
 @app.route('/api/user/diagnoses', methods=['GET'])
 @token_required
 def get_diagnoses(current_user):
-    patient = Patient.query.filter_by(user_id = current_user.id).first()
-    all = Note.query.filter_by(patient_id = patient.id).all()
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    all = Note.query.filter_by(patient_id=patient.id).all()
     results = notes_schema.dump(all)
     for val in results:
-        current_doctor = Doctor.query.filter_by(id = val['doctor_id']).first()
-        doctor = User.query.filter_by(id = current_doctor.user_id).first()
-        val['doctor'] = {'name': doctor.name, 'surname':doctor.surname, 'patronymic':doctor.patronymic}
+        current_doctor = Doctor.query.filter_by(id=val['doctor_id']).first()
+        doctor = User.query.filter_by(id=current_doctor.user_id).first()
+        val['doctor'] = {'name': doctor.name, 'surname': doctor.surname, 'patronymic': doctor.patronymic}
     return jsonify(results)
+
 
 # добавление анамнеза
 @app.route('/api/user/anamnesis', methods=['POST'])
@@ -152,6 +159,68 @@ def add_anamnesis(current_user):
 
     return make_response('Анамнез успешно добавлен', 200)
 
+
+# добавление статьи
+@app.route('/api/user/article', methods=['POST'])
+@token_required
+def add_article(current_user):
+    title = request.json['title']
+    text = request.json['text']
+    article_img = request.json['article_img']
+    user_id = current_user.id
+
+    if not current_user.is_doctor:
+        return make_response('Статья успешно не добавлена', 403)
+
+    article = Article(text, article_img, title, user_id)
+    db.session.add(article)
+    db.session.commit()
+
+    return make_response('Статья успешно добавлена', 200)
+
+
+# редиактирование статьи
+@app.route('/api/user/change/article/<article_id>', methods=['PUT'])
+@token_required
+def change_article(current_user, article_id):
+    new_title = request.json['title']
+    new_text = request.json['text']
+    new_article_img = request.json['article_img']
+    current_article = Article.query.filter_by(id=article_id).first()
+    user_id = current_article.user_id
+
+    if not current_user.is_doctor:
+        return make_response('Вы не можете редактировать статью', 403)
+
+    if current_user.id != user_id:
+        return make_response('Вы не можете редактировать статью', 403)
+
+    current_article.title = new_title
+    current_article.text = new_text
+    current_article.article_img = new_article_img
+    db.session.commit()
+
+    return make_response('Статья успешно отредактирована', 200)
+
+
+@app.route('/api/user/delete/article/<article_id>', methods=['DELETE'])
+@token_required
+def delete_article(current_user, article_id):
+    current_article = Article.query.filter_by(id=article_id).first()
+    user_id = current_article.user_id
+
+    if not current_user.is_doctor:
+        return make_response('Вы не можете удалить статью', 403)
+
+    if current_user.id != user_id:
+        return make_response('Вы не можете удалить статью', 403)
+
+    db.session.delete(current_article)
+    db.session.commit()
+
+    return make_response('Статья успешно удалена', 200)
+
+
 @token_required
 def edit_anamnesis(current_user):
     anamnesis = request.json['anamnesis']
@@ -162,6 +231,7 @@ def edit_anamnesis(current_user):
     db.session.commit()
 
     return make_response('Анамнез успешно обновлен', 200)
+
 
 # добавление СНИЛС
 @app.route('/api/user/snils', methods=['POST'])
@@ -220,12 +290,14 @@ def register():
 
     added_user = User.query.filter_by(phone_number=phone_number).first()
     if added_user:
-        return make_response('Registration failed', 409, {'message': 'Данный номер телефона уже привязан к другой учетной записи!'})
+        return make_response('Registration failed', 409,
+                             {'message': 'Данный номер телефона уже привязан к другой учетной записи!'})
 
     user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)
     db.session.commit()
     return make_response('User successful registered', 200)
+
 
 # авторизация пользователя
 @app.route('/api/auth/auth')
@@ -245,9 +317,9 @@ def login():
                            app.config['SECRET_KEY'])
 
         result = user_schema.dump(user)
-        passport = Passport.query.filter_by(user_id = user.id).first()
-        snils = Snils.query.filter_by(user_id = user.id).first()
-        patient = Patient.query.filter_by(user_id = user.id).first()
+        passport = Passport.query.filter_by(user_id=user.id).first()
+        snils = Snils.query.filter_by(user_id=user.id).first()
+        patient = Patient.query.filter_by(user_id=user.id).first()
 
         if not passport:
             passport = Passport(None, None, None)
@@ -258,6 +330,8 @@ def login():
         if not patient:
             patient = Patient(None, None)
 
-        return jsonify({'token': token.decode('UTF-8') ,'user': {'user': result, 'passport': {'series': passport.series, 'number':passport.number}, 'snils': snils.number, 'anamnesis': patient.anamnesis}})
+        return jsonify({'token': token.decode('UTF-8'),
+                        'user': {'user': result, 'passport': {'series': passport.series, 'number': passport.number},
+                                 'snils': snils.number, 'anamnesis': patient.anamnesis}})
 
     return make_response('Could not verify', 401, {'message': 'Login required!'})

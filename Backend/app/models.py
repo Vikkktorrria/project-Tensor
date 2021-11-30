@@ -58,10 +58,11 @@ class Article(db.Model):
     # связи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, text, article_img, title):
+    def __init__(self, text, article_img, title, user_id):
         self.text = text
         self.article_img = article_img
         self.title = title
+        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Article
