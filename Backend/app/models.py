@@ -16,6 +16,7 @@ class User(db.Model):
     created_on = db.Column(db.DateTime(), default=datetime.now)  # когда сознадо
     updated_on = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)  # когда изменено
     avatar_img = db.Column(db.String(200))
+    is_doctor = db.Column(db.Boolean, default=False)
     # отношения с другими таблицами
     article = db.relationship('Article', backref='user')
     passport = db.relationship('Passport', backref='user', uselist=False)
@@ -39,7 +40,7 @@ class UserSchema(ma.Schema):
     class Meta:
         fields = (
             'id', 'avatar_img', 'name', 'surname', 'patronymic', 'b_date', 'mail', 'phone_number',
-            'created_on', 'updated_on')
+            'is_doctor', 'created_on', 'updated_on')
 
 
 # объекты для отправки и приёмов запросов

@@ -227,7 +227,6 @@ def register():
     db.session.commit()
     return make_response('User successful registered', 200)
 
-
 # авторизация пользователя
 @app.route('/api/auth/auth')
 def login():
@@ -246,7 +245,19 @@ def login():
                            app.config['SECRET_KEY'])
 
         result = user_schema.dump(user)
+        passport = Passport.query.filter_by(user_id = user.id).first()
+        snils = Snils.query.filter_by(user_id = user.id).first()
+        patient = Patient.query.filter_by(user_id = user.id).first()
 
-        return jsonify({'token': token.decode('UTF-8'), 'user': result})
+        if not passport:
+            passport = Passport(None, None, None)
+
+        if not snils:
+            snils = Snils(None, None)
+
+        if not patient:
+            patient = Patient(None, None)
+
+        return jsonify({'token': token.decode('UTF-8') ,'user': {'user': result, 'passport': {'series': passport.series, 'number':passport.number}, 'snils': snils.number, 'anamnesis': patient.anamnesis}})
 
     return make_response('Could not verify', 401, {'message': 'Login required!'})
