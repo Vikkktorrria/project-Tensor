@@ -58,11 +58,10 @@ class Article(db.Model):
     # связи
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, text, article_img, title, user_id):
+    def __init__(self, text, article_img, title):
         self.text = text
         self.article_img = article_img
         self.title = title
-        self.user_id = user_id
 
 
 # класс для работы с полями в таблице Article
@@ -126,7 +125,7 @@ class DoctorSchema(ma.Schema):
 
 # объекты для отправки и приёмов запросов
 doctor_schema = DoctorSchema()
-doctor_schema = DoctorSchema(many=True)
+doctors_schema = DoctorSchema(many=True)
 
 
 # класс таблицы Patient
@@ -205,7 +204,13 @@ class NoteSchema(ma.Schema):
         fields = ('id', 'date_of_visit', 'diagnosis', 'recipe', 'doctor_id')
 
 
+class UnsignedNoteSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'date_of_visit', 'doctor_id')
+
+
 # объекты для отправки и приёмов запросов
 note_schema = NoteSchema()
 notes_schema = NoteSchema(many=True)
+unsigned_notes_schema = UnsignedNoteSchema(many=True)
 
