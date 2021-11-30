@@ -159,6 +159,17 @@ def add_anamnesis(current_user):
 
     return make_response('Анамнез успешно добавлен', 200)
 
+@token_required
+def edit_anamnesis(current_user):
+    anamnesis = request.json['anamnesis']
+    user_id = current_user.id
+
+    patient = Patient.query.filter_by(user_id=user_id).first()
+    patient.anamnesis = anamnesis
+    db.session.commit()
+
+    return make_response('Анамнез успешно обновлен', 200)
+
 
 # добавление статьи
 @app.route('/api/user/article', methods=['POST'])
@@ -221,16 +232,7 @@ def delete_article(current_user, article_id):
     return make_response('Статья успешно удалена', 200)
 
 
-@token_required
-def edit_anamnesis(current_user):
-    anamnesis = request.json['anamnesis']
-    user_id = current_user.id
 
-    patient = Patient.query.filter_by(user_id=user_id).first()
-    patient.anamnesis = anamnesis
-    db.session.commit()
-
-    return make_response('Анамнез успешно обновлен', 200)
 
 
 # добавление СНИЛС
