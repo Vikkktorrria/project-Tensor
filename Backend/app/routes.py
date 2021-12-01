@@ -385,15 +385,117 @@ def add_note(current_user):
 @token_required
 def delete_note(current_user, note_id):
     current_note = Note.query.filter_by(id=note_id).first()
-    user_id = current_article.user_id
+    user_id = current_note.user_id
 
-    if current_user.is_doctor:
+    if current_user.id != user_id:
         return make_response('Вы не можете удалить запись', 403)
-
-    #if current_user.id != user_id:
-       # return make_response('Вы не можете удалить запись', 403)
 
     db.session.delete(current_note)
     db.session.commit()
 
     return make_response('Запись успешно удалена', 200)
+
+
+# удаление записи для доктора
+@app.route('/api/user/doctor/delete/note/<note_id>', methods=['DELETE'])
+@token_required
+def delete_note_by_doctor(current_user, note_id):
+    if not current_user.is_doctor:
+        return make_response('Вы не можете удалить запись', 403)
+
+    current_note = Note.query.filter_by(id=note_id).first()
+    doctor_id = current_note.doctor_id
+    current_doctor = Doctor.query.filter_by(id=doctor_id).first()
+
+
+    if current_doctor.id != doctor_id:
+        return make_response('Вы не можете удалить запись', 403)
+
+    db.session.delete(current_note)
+    db.session.commit()
+
+    return make_response('Запись успешно удалена', 200)
+
+# получение информации о докторе
+@app.route('/api/user/doctor/info', methods=['GET'])
+@token_required
+def get_one_doctor(current_user):
+    if not current_user.is_doctor:
+        return make_response('Этот пользователь не доктор', 403)
+
+    current_doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    user = User.query.filter_by(id=current_doctor.user_id).first()
+
+    result = doctor_schema.dump(current_doctor)
+    result['fullName'] = {'name': user.name, 'surname': user.surname, 'patronymic': user.patronymic}
+    
+    return jsonify(result)
+
+
+# получение записей (для доктора)
+@app.route('/api/user/doctor/note', methods=['GET'])
+@token_required
+def get_note_doctor(current_user):
+    if not current_user.is_doctor:
+        return make_response('Этот пользователь не доктор', 403)
+
+    current_doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    doctors_notes = Note.query.filter_by(doctor_id=current_doctor.id).all()
+
+    result = notes_schema.dump(doctors_notes)
+    return jsonify(result)
+
+
+# редактирование записи (для доктора)
+@app.route('/api/user/doctor/change/note/<note_id>', methods=['PUT'])
+@token_required
+def change_note_doctor(current_user, note_id):
+    if not current_user.is_doctor:
+        return make_response('Этот пользователь не доктор', 403)
+
+    current_doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    current_note = Note.query.filter_by(id=note_id).first()
+
+    if current_note.doctor_id != current_doctor.id:
+        return make_response('Вы не можете редактировать статью', 403)
+
+    new_recipe = request.json['recipe']
+    new_diagnosis = request.json['diagnosis']
+    # new_date_of_visit = request.json['date_of_visit']
+
+    current_note.recipe = new_recipe
+    current_note.diagnosis = new_diagnosis
+    # current_note.date_of_visit = new_date_of_visit
+    db.session.commit()
+
+    return make_response('Запись успешно отредактирована', 200)
+
+#получить доктору информацию о пациенте
+@app.route('/api/doctor/getuserinfo/<user_id>', methods=['GET'])
+@token_required
+def watch_user_by_doctor(current_user, user_id):
+    if not current_user.is_doctor:
+        return make_response('Недостаточно прав', 403)
+
+    user = User.query.filter_by(id=user_id).first()
+
+    if not user:
+        return make_response('Пользователь не найден!', 404)
+
+    result = user_schema.dump(user)
+    passport = Passport.query.filter_by(user_id=user.id).first()
+    snils = Snils.query.filter_by(user_id=user.id).first()
+    patient = Patient.query.filter_by(user_id=user.id).first()
+
+    if not passport:
+        passport = Passport(None, None, None)
+
+    if not snils:
+        snils = Snils(None, None)
+
+    if not patient:
+        return make_response('Указанный пользователь не является пациентом!', 404)
+
+    return jsonify(
+        {'user': result, 'passport': {'series': passport.series, 'number': passport.number}, 'snils': snils.number,
+         'anamnesis': patient.anamnesis})
