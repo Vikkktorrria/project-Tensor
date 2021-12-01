@@ -362,7 +362,6 @@ def delete_article(current_user, article_id):
 
     return make_response('Статья успешно удалена', 200)
 
-
 # добавление записи
 @app.route('/api/user/patient/note', methods=['POST'])
 @token_required
