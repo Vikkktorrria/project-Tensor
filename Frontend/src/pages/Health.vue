@@ -18,7 +18,7 @@
         </div>
         <div class="card__footer">
           <div class="card__date">
-            {{diagnosis.dateAdded}}
+            {{diagnosis.date_of_visit}}
           </div>
           <div class="card__name-doctor">
             {{diagnosis.doctor.name}} {{diagnosis.doctor.surname}} {{diagnosis.doctor.patronymic}}
@@ -36,30 +36,7 @@ export default {
   name: "Health",
   data() {
     return {
-      diagnoses: [
-        {
-          id: 1,
-          diagnosis: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni enim, recusandae neque voluptas et sunt veniam?',
-          recipe: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni enim, recusandae neque voluptas et sunt veniam?',
-          dateAdded: '2020-12-31',
-          doctor: {
-            name: 'Иван',
-            surname: 'Иванов',
-            patronymic: 'Иванович',
-          }
-        },
-        {
-          id: 2,
-          diagnosis: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni enim, recusandae neque voluptas et sunt veniam?',
-          recipe: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni enim, recusandae neque voluptas et sunt veniam?',
-          dateAdded: '2020-12-31',
-          doctor: {
-            name: 'Иван',
-            surname: 'Иванов',
-            patronymic: 'Иванович',
-          }
-        },
-      ],
+      diagnoses: [],
     }
   },
   methods: {

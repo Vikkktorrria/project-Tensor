@@ -50,6 +50,11 @@
     </div>
     <div class="navigation__bar" v-if="!isAuth">
       <nav-el
+          @click="$router.push('/')"
+          :is-active="isSelected('/')"
+          :class-icon="'news-icon'"
+      >Новости</nav-el>
+      <nav-el
           @click="$router.push('/registration')"
           :is-active="isSelected('/registration')"
           :class-icon="'registration-icon'"

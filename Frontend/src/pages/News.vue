@@ -8,9 +8,9 @@
     >
       <div class="card card_no-border col-md-8" href="#">
         <h3 class="card__title">{{item.title}}</h3>
-        <div class="card__pic" v-if="item.image">
+        <div class="card__pic" v-if="item.article_img">
           <img
-            :src="item.image"
+            :src="'http://127.0.0.1:5000/user/image/' + item.article_img"
             :alt="item.title"
             class="card__pic-image">
         </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="card__footer">
           <div class="card__date">
-            {{item.date}}
+            {{item.created_on}}
           </div>
         </div>
       </div>
@@ -34,28 +34,7 @@ export default {
   name: "News",
   data() {
     return {
-      news: [
-        {
-          id: 1,
-          title: 'Новость 1',
-          image: '',
-          text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur
-          obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni
-          enim, recusandae neque voluptas et sunt veniam?`,
-          date: '2020-12-31'
-
-        },
-        {
-          id: 2,
-          title: 'Новость 2',
-          image: '',
-          text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto assumenda consequatur
-          obcaecati distinctio sint minima porro saepe nisi dolor fugit tempore dolores magni
-          enim, recusandae neque voluptas et sunt veniam?`,
-          date: '2020-12-31'
-
-        },
-      ]
+      news: []
     }
   },
   methods: {

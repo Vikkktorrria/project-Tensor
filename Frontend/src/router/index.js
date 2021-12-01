@@ -12,6 +12,16 @@ import Note from "../pages/Note";
 
 const routes = [
     {
+        path: '/',
+        name: 'startPage',
+        component: News
+    },
+    {
+        path: '/news',
+        name: 'news',
+        component: News
+    },
+    {
         path: '/registration',
         name: 'registration',
         component: Registration
@@ -40,11 +50,6 @@ const routes = [
         path: '/health',
         name: 'health',
         component: Health
-    },
-    {
-        path: '/news',
-        name: 'news',
-        component: News
     },
     {
         path: '/note',

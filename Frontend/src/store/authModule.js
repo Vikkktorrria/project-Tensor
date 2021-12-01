@@ -32,6 +32,7 @@ export const authModule = {
                 }
             }
             state.currentUser = {
+                id: user.id,
                 name: user.name,
                 surname: user.surname,
                 patronymic: user.patronymic ?? '',

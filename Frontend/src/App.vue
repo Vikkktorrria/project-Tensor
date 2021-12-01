@@ -48,10 +48,9 @@ export default {
   methods: {
     ...mapMutations({
       setAuth: 'auth/setAuth',
-      checkAuth: 'auth/checkAuth'
     }),
     ...mapActions({
-      userData: 'auth/userData'
+      checkAuth: 'auth/checkAuth'
     }),
     // checkAuth() {
     //   if(localStorage.getItem('token')) {
