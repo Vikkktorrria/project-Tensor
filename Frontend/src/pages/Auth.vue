@@ -87,14 +87,11 @@ export default {
           const response = await axios.get('http://127.0.0.1:5000/api/auth/auth', {
             headers: {'Authorization': `Basic ${token}`}
           })
-          console.log(response.data.user);
           localStorage.setItem('token', response.data.token)
           this.setUser(response.data.user)
           this.setAuth(true)
           await  this.$router.push({ name: 'notification' });
         } catch (error) {
-          console.log(error)
-          console.log(error.response)
           alert(error.response)
         } finally {
 

@@ -28,7 +28,7 @@
           </div>
           <div v-if="currentUser?.isDoctor" class="news__buttons">
             <div class="form__button form_card__button">
-              <button class="btn">
+              <button class="btn" @click="this.dialogUpdateVisible = true">
                 Редактировать
               </button>
             </div>
@@ -40,6 +40,12 @@
           </div>
         </div>
       </div>
+      <my-dialog v-model:show="dialogUpdateVisible">
+        <update-article
+            :article="item"
+            @create="updateNews"
+        ></update-article>
+      </my-dialog>
     </div>
   </div>
   <my-dialog v-model:show="dialogVisible">
@@ -53,15 +59,18 @@
 import axios from "axios";
 import {mapState} from "vuex";
 import CreateArticle from "../components/CreateArticle";
+import UpdateArticle from "../components/UpdateArticle";
 
 export default {
-  components: [
+  components: {
     CreateArticle,
-  ],
+    UpdateArticle,
+  },
   name: "News",
   data() {
     return {
       dialogVisible: false,
+      dialogUpdateVisible: false,
       news: [],
       article: [],
     }
@@ -82,13 +91,15 @@ export default {
       await this.fetchNews()
     },
     async updateNews(e) {
-      try {
-        const response = await axios.put('http://127.0.0.1:5000/api/news')
-      } catch (error) {
-        alert(error.request.response)
-      } finally {
-        await this.fetchNews()
-      }
+      this.dialogUpdateVisible = false;
+      await this.fetchNews()
+      // try {
+      //   const response = await axios.put('http://127.0.0.1:5000/api/news')
+      // } catch (error) {
+      //   alert(error.request.response)
+      // } finally {
+      //   await this.fetchNews()
+      // }
     },
     async deleteNews(article_id) {
       if(confirm('Вы действительно хотите удалить запись?')) {

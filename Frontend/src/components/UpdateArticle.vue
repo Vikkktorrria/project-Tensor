@@ -1,6 +1,6 @@
 <template>
   <h3 class="card__title">
-    Создание новости
+    Изменить новость
   </h3>
   <div class="card__text">
     <form class="form form_card" @submit.prevent="createNews">
@@ -44,7 +44,7 @@
           for="input__file"
       >
         <div class="add-file">
-          Загрузить картинку
+          Изменить картинку
         </div>
         <input
             id="input__file"
@@ -58,7 +58,7 @@
       </label>
       <div class="form__button form_card__button">
         <button class="btn">
-          Добавить новость
+          Редактировать новость
         </button>
       </div>
     </form>
@@ -71,13 +71,19 @@ import useVuelidate from "@vuelidate/core";
 import axios from "axios";
 
 export default {
-  name: "CreateArticle",
+  name: "UpdateArticle",
   data() {
     return {
       v$: useVuelidate(),
       title: '',
       text: '',
       article_img: File,
+    }
+  },
+  props: {
+    article: {
+      type:Array,
+      required: true,
     }
   },
   validations() {
@@ -96,25 +102,46 @@ export default {
       if (this.v$.$invalid) {
         console.log('error')
       } else {
-        try {
-          let formData = new FormData();
-          formData.append('file', this.article_img.target.files[0])
-          console.log(this.article_img)
-          const response = await axios.post('http://127.0.0.1:5000/api/user/article', {
-            title: this.title,
-            text: this.text,
-            formData
-          }, {
-            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
-          })
-        } catch (error) {
-          alert(error.request.response)
-        } finally {
-          this.$emit('create', this.title)
+        if (this.article_img) {
+          try {
+            let formData = new FormData();
+            formData.append('file', this.article_img.target.files[0])
+            const response = await axios.put('http://127.0.0.1:5000/api/user/article', {
+              title: this.title,
+              text: this.text,
+              formData
+            }, {
+              headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            })
+          } catch (error) {
+            alert(error.request.response)
+          } finally {
+            this.$emit('create', this.title)
+          }
+        } else {
+          try {
+            const response = await axios.put('http://127.0.0.1:5000/api/user/article', {
+              title: this.title,
+              text: this.text,
+            }, {
+              headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            })
+          } catch (error) {
+            alert(error.request.response)
+          } finally {
+            this.$emit('create', this.title)
+          }
         }
       }
     },
+    installArticle() {
+      this.title = this.article.title
+      this.text = this.article.text
+    }
   },
+  mounted() {
+    this.installArticle()
+  }
 }
 </script>
 
@@ -134,5 +161,8 @@ textarea {
 }
 .form_card__input, .form__input {
   margin: 0;
+}
+.form__el-input {
+  width: 100%;
 }
 </style>
