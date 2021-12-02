@@ -16,7 +16,7 @@
       <div class="navigation__line"></div>
       <div class="navigation__line"></div>
     </div>
-    <div class="navigation__bar" v-if="isAuth">
+    <div class="navigation__bar" v-if="isAuth && !currentUser.isDoctor">
       <nav-el
           @click="$router.push('/profile')"
           :is-active="isSelected('/profile')"
@@ -70,6 +70,28 @@
           :class-icon="'question-icon'"
       >Помощь</nav-el>
     </div>
+    <div class="navigation__bar" v-if="currentUser.isDoctor">
+      <nav-el
+          @click="$router.push('/profile')"
+          :is-active="isSelected('/profile')"
+          :class-icon="'user-icon'"
+      >Профиль</nav-el>
+      <nav-el
+          @click="$router.push('/news')"
+          :is-active="isSelected('/news')"
+          :class-icon="'news-icon'"
+      >Новости</nav-el>
+      <nav-el
+          @click="$router.push('/note')"
+          :is-active="isSelected('/note')"
+          :class-icon="'note-icon'"
+      >Запись</nav-el>
+      <nav-el
+          @click="$router.push('/settings')"
+          :is-active="isSelected('/settings')"
+          :class-icon="'settings-icon'"
+      >Настройки</nav-el>
+    </div>
   </nav>
 </template>
 
@@ -89,12 +111,12 @@ export default {
   methods: {
     isSelected(href) { return this.$route.href === href },
     changeNav() {
-      console.log('click')
       this.burgerIsActive = !this.burgerIsActive
     }
   },
   computed: {
     ...mapState({
+      currentUser: state => state.auth.currentUser,
       isAuth: state => state.auth.isAuth,
     }),
   },

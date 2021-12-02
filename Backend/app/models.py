@@ -206,7 +206,7 @@ class NoteSchema(ma.Schema):
 
 class UnsignedNoteSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'date_of_visit', 'doctor_id')
+        fields = ('id', 'date_of_visit', 'doctor_id', 'user_id')
 
 
 # объекты для отправки и приёмов запросов

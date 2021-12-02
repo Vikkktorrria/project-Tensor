@@ -7,7 +7,7 @@
     <div class="row">
       <change-email-form></change-email-form>
     </div>
-    <div class="row">
+    <div class="row" v-if="!currentUser.isDoctor">
       <notification-form></notification-form>
     </div>
 
@@ -46,6 +46,7 @@ export default {
   },
   computed: {
     ...mapState({
+      currentUser: state => state.auth.currentUser,
       isAuth: state => state.auth.isAuth,
     }),
   },

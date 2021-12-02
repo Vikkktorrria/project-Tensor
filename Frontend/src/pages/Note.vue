@@ -1,5 +1,6 @@
 <template>
   <h1 class="h1-text">Запись</h1>
+  <h1 class="h1-text">Выберите время записи</h1>
   <my-dialog v-model:show="dialogVisible">
     <create-note
       @create="setTextNote"
@@ -20,6 +21,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import ruLocale from "@fullcalendar/core/locales/ru";
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from "axios";
+import {mapState} from "vuex";
 let eventGuid = 0
 let selInfo;
 export default {
@@ -72,19 +74,46 @@ export default {
     }
   },
   methods: {
-    setTextNote(doctor) {
-      this.textNote = `${doctor.fullName.surname}  ${doctor.fullName.name}`
+    async setTextNote(doctor) {
       this.dialogVisible = false;
-      let title = this.textNote
-      let selectInfo = selInfo
-      let calendarApi = selectInfo.view.calendar
-      calendarApi.addEvent({
-        id: this.createEventId(),
-        title: title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
+      let counter = 0
+      this.currentEvents.forEach((el) => {
+        if (el.extendedProps.userId === this.currentUser.id && el.start > Date.now()) { counter += 1 }
       })
+      if (counter > 4) {
+        alert('Вы создали более 4-х записей')
+      } else {
+        this.textNote = `${doctor.fullName.surname}  ${doctor.fullName.name}`
+        let title = this.textNote
+        let selectInfo = selInfo
+        let calendarApi = selectInfo.view.calendar
+        calendarApi.addEvent({
+          id: this.createEventId(),
+          title: 'Доктор: ' + title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          allDay: selectInfo.allDay
+        })
+        try {
+          this.currentEvents = [
+            ...this.currentEvents,
+            selectInfo
+          ]
+          const response = await axios.post('http://127.0.0.1:5000/api/user/patient/note', {
+            date_of_visit: selectInfo.startStr,
+            doctor_id: doctor.id
+          }, {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            'Content-type': 'application/json'
+          })
+          console.log(response)
+        } catch (error) {
+          alert(error.request.response)
+        } finally {
+
+        }
+      }
+      // await this.fetchNotes()
     },
     createEventId() {
       return String(eventGuid++)
@@ -96,20 +125,30 @@ export default {
       let calendarApi = selectInfo.view.calendar
       if (selectInfo.start < new Date()) {
         alert('Выбранное время уже прошло')
-        calendarApi.unselect() // clear date selection
-      } else if (selectInfo.start.getHours() < 8 || selectInfo.start.getHours() > 18) {
+        calendarApi.unselect()
+      } else if (selectInfo.start.getHours() < 8 || selectInfo.start.getHours() > 17) {
         alert('В это время больница не работает')
-        calendarApi.unselect() // clear date selection
+        calendarApi.unselect()
       } else {
         this.dialogVisible = true
         selInfo = selectInfo
       }
     },
-    handleEventClick(clickInfo) {
+    async handleEventClick(clickInfo) {
       if (Number(clickInfo.event.extendedProps.userId) !== Number(this.$store.state.auth.currentUser.id)) {
         alert('Это не ваша запись')
       } else if (confirm(`Вы уверены, что хотите удалить событие '${clickInfo.event.title}'`)) {
           clickInfo.event.remove()
+          try {
+            const response = await axios.delete(`http://127.0.0.1:5000/api/user/patient/delete/note/${clickInfo.event.id}`,{
+              headers: {Authorization:`Bearer ${localStorage.getItem('token')}`}
+            })
+            console.log(response)
+          } catch (error) {
+            alert(error.request.response)
+          } finally {
+
+          }
       }
     },
     handleEvents(events) {
@@ -124,7 +163,7 @@ export default {
         })
         result = response.data
         result.forEach((item) => {
-          let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000))
+          let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
           calendarApi.addEvent({
             id: item.id,
             title: 'Доктор: ' + item.doctor.surname + " " + item.doctor.name,
@@ -146,6 +185,11 @@ export default {
   components: {
     FullCalendar,
     CreateNote
+  },
+  computed: {
+    ...mapState({
+      currentUser: state => state.auth.currentUser,
+    })
   },
   mounted() {
     this.fetchNotes()
