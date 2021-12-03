@@ -132,7 +132,7 @@ def get_articles():
 @token_required
 def get_diagnoses(current_user):
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    all = Note.query.filter_by(patient_id=patient.id).all()
+    all = Note.query.filter_by(user_id=patient.user_id).all()
     results = notes_schema.dump(all)
     for val in results:
         current_doctor = Doctor.query.filter_by(id=val['doctor_id']).first()

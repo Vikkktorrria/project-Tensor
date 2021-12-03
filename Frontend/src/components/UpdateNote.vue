@@ -3,7 +3,7 @@
     {{note.patient.name}} {{note.patient.surname}} {{note.patient.patronymic}}
   </h3>
   <div class="card__text">
-    <form class="form form_card" @submit.prevent="createNews">
+    <form class="form form_card" @submit.prevent="createNote">
       <div
           class="form__el form_card__el"
           :class="{
@@ -12,6 +12,7 @@
                 }"
       >
         <div class="form__el-input">
+          <p class="text-input">Диагноз</p>
           <textarea
               class="form__input form_card__textarea"
               rows="5"
@@ -30,13 +31,14 @@
               }"
       >
         <div class="form__el-input">
-        <textarea
-            class="form__input form_card__textarea"
-            rows="5"
-            placeholder="Рецепт"
-            v-model.trim="v$.recipe.$model"
-        >
-        </textarea>
+          <p class="text-input">Рецепт</p>
+          <textarea
+              class="form__input form_card__textarea"
+              rows="5"
+              placeholder="Рецепт"
+              v-model.trim="v$.recipe.$model"
+          >
+          </textarea>
           <small v-if="v$.recipe.required">Введите текст</small>
         </div>
       </div>
@@ -80,15 +82,15 @@ export default {
     }
   },
   methods: {
-    async createNews(e) {
+    async createNote(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
         console.log('error')
       } else {
         try {
-          const response = await axios.put(`http://127.0.0.1:5000/api//doctor/change/note/${this.note.note_id}`, {
-            diagnosis: this.title,
-            recipe: this.text,
+          const response = await axios.put(`http://127.0.0.1:5000/api/user/doctor/change/note/${this.note.id}`, {
+            diagnosis: this.diagnosis,
+            recipe: this.recipe,
           }, {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
           })
@@ -100,8 +102,9 @@ export default {
       }
     },
     async installArticle() {
+      console.log(this.note)
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/api/user/doctor/note/${this.note.note_id}`, {
+        const response = await axios.get(`http://127.0.0.1:5000/api/user/doctor/note/${this.note.id}`, {
           headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
         })
         this.diagnosis = response.data.diagnosis
@@ -136,5 +139,9 @@ textarea {
 }
 .form__el-input {
   width: 100%;
+}
+.text-input {
+  padding-left: 20px;
+  font-size: 24px;
 }
 </style>

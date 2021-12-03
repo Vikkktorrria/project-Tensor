@@ -13,7 +13,7 @@
   <my-dialog v-model:show="dialogUpdateVisible">
     <update-note
         :note="currentNote"
-        @create="setTextNote"
+        @create="updateNote"
     ></update-note>
   </my-dialog>
   <FullCalendar
@@ -189,7 +189,7 @@ export default {
             let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
             calendarApi.addEvent({
               id: item.id,
-              title: 'Дата визита: ' + item['date_of_visit'],
+              title: 'Пациент: ' + item.patient.surname + ' ' + item.patient.name + ' ' + item.patient.patronymic,
               start: item['date_of_visit'],
               editable: false,
               end: timeEnd,
