@@ -70,7 +70,7 @@
           :class-icon="'question-icon'"
       >Помощь</nav-el>
     </div>
-    <div class="navigation__bar" v-if="currentUser.isDoctor">
+    <div class="navigation__bar" v-if="isAuth && currentUser.isDoctor">
       <nav-el
           @click="$router.push('/profile')"
           :is-active="isSelected('/profile')"

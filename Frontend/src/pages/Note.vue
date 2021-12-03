@@ -1,10 +1,20 @@
 <template>
   <h1 class="h1-text">Запись</h1>
-  <h1 class="h1-text">Выберите время записи</h1>
+  <p
+      class="h1-text"
+      style="font-size: 25px"
+      v-if="!currentUser.isDoctor"
+  >Выберите время записи</p>
   <my-dialog v-model:show="dialogVisible">
     <create-note
-      @create="setTextNote"
+        @create="setTextNote"
     ></create-note>
+  </my-dialog>
+  <my-dialog v-model:show="dialogUpdateVisible">
+    <update-note
+        :note="currentNote"
+        @create="setTextNote"
+    ></update-note>
   </my-dialog>
   <FullCalendar
       ref="fullCalendar"
@@ -16,12 +26,14 @@
 import '@fullcalendar/core/vdom'
 import FullCalendar from '@fullcalendar/vue3'
 import CreateNote from "../components/CreateNote";
+import UpdateNote from "../components/UpdateNote";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ruLocale from "@fullcalendar/core/locales/ru";
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from "axios";
 import {mapState} from "vuex";
+
 let eventGuid = 0
 let selInfo;
 export default {
@@ -42,12 +54,12 @@ export default {
           center: 'title',
           right: 'today prev,next'
         },
-        dateClick: (e) =>  {
+        dateClick: (e) => {
           //handle date click
         },
         businessHours: [
           {
-            daysOfWeek: [ 1, 2, 3, 4, 5],
+            daysOfWeek: [1, 2, 3, 4, 5],
             startTime: '8:00',
             endTime: '18:00',
           }
@@ -70,7 +82,9 @@ export default {
         eventsSet: this.handleEvents
       },
       startEvents: [],
-      currentEvents: []
+      currentEvents: [],
+      currentNote: [],
+      dialogUpdateVisible: false
     }
   },
   methods: {
@@ -78,7 +92,9 @@ export default {
       this.dialogVisible = false;
       let counter = 0
       this.currentEvents.forEach((el) => {
-        if (el.extendedProps.userId === this.currentUser.id && el.start > Date.now()) { counter += 1 }
+        if (el.extendedProps.userId === this.currentUser.id && el.start > Date.now()) {
+          counter += 1
+        }
       })
       if (counter > 4) {
         alert('Вы создали более 4-х записей')
@@ -115,6 +131,9 @@ export default {
       }
       // await this.fetchNotes()
     },
+    updateNote() {
+      this.dialogUpdateVisible = false;
+    },
     createEventId() {
       return String(eventGuid++)
     },
@@ -135,20 +154,23 @@ export default {
       }
     },
     async handleEventClick(clickInfo) {
-      if (Number(clickInfo.event.extendedProps.userId) !== Number(this.$store.state.auth.currentUser.id)) {
+      if (this.currentUser.isDoctor) {
+        this.currentNote = clickInfo.event.extendedProps.note
+        this.dialogUpdateVisible = true
+      } else if (Number(clickInfo.event.extendedProps.userId) !== Number(this.$store.state.auth.currentUser.id)) {
         alert('Это не ваша запись')
       } else if (confirm(`Вы уверены, что хотите удалить событие '${clickInfo.event.title}'`)) {
-          clickInfo.event.remove()
-          try {
-            const response = await axios.delete(`http://127.0.0.1:5000/api/user/patient/delete/note/${clickInfo.event.id}`,{
-              headers: {Authorization:`Bearer ${localStorage.getItem('token')}`}
-            })
-            console.log(response)
-          } catch (error) {
-            alert(error.request.response)
-          } finally {
+        clickInfo.event.remove()
+        try {
+          const response = await axios.delete(`http://127.0.0.1:5000/api/user/patient/delete/note/${clickInfo.event.id}`, {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+          })
+          console.log(response)
+        } catch (error) {
+          alert(error.request.response)
+        } finally {
 
-          }
+        }
       }
     },
     handleEvents(events) {
@@ -157,34 +179,62 @@ export default {
     async fetchNotes(e) {
       let calendarApi = this.$refs.fullCalendar.getApi()
       let result
-      try {
-        const response = await axios.get('http://127.0.0.1:5000/api/diagnoses', {
-          headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
-        })
-        result = response.data
-        result.forEach((item) => {
-          let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
-          calendarApi.addEvent({
-            id: item.id,
-            title: 'Доктор: ' + item.doctor.surname + " " + item.doctor.name,
-            start: item['date_of_visit'],
-            editable: false,
-            end: timeEnd,
-            extendedProps: {
-              userId: item['user_id']
-            }
+      if (this.currentUser.isDoctor) {
+        try {
+          const response = await axios.get('http://127.0.0.1:5000/api/user/doctor/note', {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
           })
-        })
-      } catch (error) {
-        alert(error.request.response)
-      } finally {
+          result = response.data
+          result.forEach((item) => {
+            let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
+            calendarApi.addEvent({
+              id: item.id,
+              title: 'Дата визита: ' + item['date_of_visit'],
+              start: item['date_of_visit'],
+              editable: false,
+              end: timeEnd,
+              extendedProps: {
+                note: item,
+                userId: item['user_id']
+              }
+            })
+          })
+        } catch (error) {
+          alert(error.request.response)
+        } finally {
 
+        }
+      } else {
+        try {
+          const response = await axios.get('http://127.0.0.1:5000/api/diagnoses', {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          })
+          result = response.data
+          result.forEach((item) => {
+            let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
+            calendarApi.addEvent({
+              id: item.id,
+              title: 'Доктор: ' + item.doctor.surname + " " + item.doctor.name,
+              start: item['date_of_visit'],
+              editable: false,
+              end: timeEnd,
+              extendedProps: {
+                userId: item['user_id']
+              }
+            })
+          })
+        } catch (error) {
+          alert(error.request.response)
+        } finally {
+
+        }
       }
     },
   },
   components: {
     FullCalendar,
-    CreateNote
+    CreateNote,
+    UpdateNote
   },
   computed: {
     ...mapState({

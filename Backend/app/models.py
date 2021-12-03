@@ -201,7 +201,7 @@ class Note(db.Model):
 # класс для работы с полями в таблице Notes
 class NoteSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'date_of_visit', 'diagnosis', 'recipe', 'doctor_id')
+        fields = ('id', 'date_of_visit', 'diagnosis', 'recipe', 'doctor_id', 'user_id')
 
 
 class UnsignedNoteSchema(ma.Schema):
