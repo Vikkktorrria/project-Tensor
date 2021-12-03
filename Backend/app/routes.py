@@ -442,7 +442,28 @@ def get_note_doctor(current_user):
     current_doctor = Doctor.query.filter_by(user_id=current_user.id).first()
     doctors_notes = Note.query.filter_by(doctor_id=current_doctor.id).all()
 
-    result = notes_schema.dump(doctors_notes)
+    results = notes_schema.dump(doctors_notes)
+    for val in results:
+        patient = User.query.filter_by(id=val['user_id']).first()
+        val['patient'] = {'name': patient.name, 'surname': patient.surname, 'patronymic': patient.patronymic}
+    return jsonify(results)
+
+
+@app.route('/api/user/doctor/note/<note_id>', methods=['GET'])
+@token_required
+def get_one_note_doctor(current_user, note_id):
+    if not current_user.is_doctor:
+        return make_response('Этот пользователь не доктор', 403)
+
+    current_doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    doctors_note = Note.query.filter_by(id=note_id).first()
+
+    if current_doctor.id != doctors_note.doctor_id:
+        return make_response('Ошибка доступа. Это не ваша запись.', 403)
+
+    result = note_schema.dump(doctors_note)
+    patient = User.query.filter_by(id=result['user_id']).first()
+    result['patient'] = {'name': patient.name, 'surname': patient.surname, 'patronymic': patient.patronymic}
     return jsonify(result)
 
 
