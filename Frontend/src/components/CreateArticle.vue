@@ -107,24 +107,25 @@ export default {
           }, {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
           })
-          console.log(response.data)
-          this.article.id = response.data
+          let res = response.data
+          let resArray = res.split("").reverse().join("").split(' ')
+          this.article.id = resArray[0].split("").reverse().join("")
         } catch (error) {
           console.log(error)
         } finally {
           this.$emit('create', this.title)
         }
-      }
-      if (this.article_img) {
-        try {
-          let formData = new FormData();
-          formData.append('file', this.article_img)
-          const response = await axios.post(`http://127.0.0.1:5000/api/user/change/article/img/${this.article.id}`, formData, {
-            headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
-            'Content-Type': 'multipart/form-data'
-          })
-        } catch (error) {
-          console.log(error)
+        if (this.article_img) {
+          try {
+            let formData = new FormData();
+            formData.append('file', this.article_img)
+            const response = await axios.put(`http://127.0.0.1:5000/api/user/change/article/img/${this.article.id}`, formData, {
+              headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+              'Content-Type': 'multipart/form-data'
+            })
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
     },

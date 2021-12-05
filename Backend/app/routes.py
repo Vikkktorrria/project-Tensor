@@ -126,6 +126,12 @@ def get_articles():
     results = articles_schema.dump(all)
     return jsonify(results)
 
+@app.route('/api/article/<article_id>', methods=['GET'])
+def get_article(article_id):
+    article = Article.query.filter_by(id=article_id).first()
+    results = {'title': article.title, 'text': article.text, 'id': article.id}
+    return jsonify(results)
+
 
 # диагнозы пользователя
 @app.route('/api/user/diagnoses', methods=['GET'])
@@ -301,7 +307,7 @@ def login():
     return make_response('Could not verify', 401, {'message': 'Login required!'})
 
 # загрузить img для статьи
-@app.route('/api/user/change/article/img/<article_id>', methods=['POST'])
+@app.route('/api/user/change/article/img/<article_id>', methods=['PUT'])
 @token_required
 def upload_article_image(current_user, article_id):
     current_article = Article.query.filter_by(id=article_id).first()
@@ -337,7 +343,7 @@ def add_article(current_user):
     db.session.add(article)
     db.session.commit()
 
-    return make_response(article.id, 200)
+    return make_response('Статья успешно добавлена ' + str(article.id), 200)
 
 
 # редиактирование статьи

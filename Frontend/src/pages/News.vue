@@ -42,7 +42,7 @@
       </div>
       <my-dialog v-model:show="dialogUpdateVisible">
         <update-article
-            :article="item"
+            :article="item.id"
             @create="updateNews"
         ></update-article>
       </my-dialog>
@@ -88,18 +88,15 @@ export default {
     },
     async createNews(e) {
       this.dialogVisible = false;
-      await this.fetchNews()
+      setTimeout(async () => {
+        await this.fetchNews()
+      }, 1500)
     },
     async updateNews(e) {
       this.dialogUpdateVisible = false;
-      await this.fetchNews()
-      // try {
-      //   const response = await axios.put('http://127.0.0.1:5000/api/news')
-      // } catch (error) {
-      //   alert(error.request.response)
-      // } finally {
-      //   await this.fetchNews()
-      // }
+      setTimeout(async () => {
+        await this.fetchNews()
+      }, 1500)
     },
     async deleteNews(article_id) {
       if(confirm('Вы действительно хотите удалить запись?')) {

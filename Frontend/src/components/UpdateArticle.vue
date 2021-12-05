@@ -75,6 +75,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
+      id: '',
       title: '',
       text: '',
       article_img: File,
@@ -97,28 +98,26 @@ export default {
     }
   },
   methods: {
-    getFile(e) {
-      this.article_img = e.target.files[0]
+    async getFile(e) {
+      console.log(this.id)
+      try {
+        let formData = new FormData();
+        formData.append('file', e.target.files[0])
+        const response = await axios.put(`http://127.0.0.1:5000/api/user/change/article/img/${this.id}`, formData, {
+          headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
+          'Content-Type': 'multipart/form-data'
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     async createNews(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
         console.log('error')
       } else {
-        if (this.article_img) {
-          try {
-            let formData = new FormData();
-            formData.append('file', this.article_img)
-            const response = await axios.post(`http://127.0.0.1:5000/api/user/change/article/img/${this.article.id}`, formData, {
-              headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
-              'Content-Type': 'multipart/form-data'
-            })
-          } catch (error) {
-            console.log(error)
-          }
-        }
         try {
-          const response = await axios.put(`http://127.0.0.1:5000/api/user/change/article/${this.article.id}`, {
+          const response = await axios.put(`http://127.0.0.1:5000/api/user/change/article/${this.id}`, {
             title: this.title,
             text: this.text,
           }, {
@@ -131,13 +130,16 @@ export default {
         }
       }
     },
-    installArticle() {
-      console.log(this.article)
-      this.title = this.article.title
-      this.text = this.article.text
+    async installArticle() {
+      const response = await axios.get(`http://127.0.0.1:5000/api/article/${this.article}`)
+      // console.log(response.data)
+      this.id = response.data.id
+      this.title = response.data.title
+      this.text = response.data.text
     }
   },
   mounted() {
+    console.log(this.article)
     this.installArticle()
   }
 }
