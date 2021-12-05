@@ -13,7 +13,7 @@ from app import app, db
 from app.models import *
 
 # проверить директорию
-UPLOAD_FOLDER = 'C:/Users/mauta/Desktop/project-Tensor-main/Backend/app/upload'
+UPLOAD_FOLDER = './app/upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -300,6 +300,26 @@ def login():
 
     return make_response('Could not verify', 401, {'message': 'Login required!'})
 
+# загрузить img для статьи
+@app.route('/api/user/change/article/img/<article_id>', methods=['POST'])
+@token_required
+def upload_article_image(current_user, article_id):
+    current_article = Article.query.filter_by(id=article_id).first()
+    img = request.files['file']
+    if not img:
+        return make_response("Фото не загружено!", 400)
+
+    filename = img.filename
+    mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
+    mimetype = '.' + mimetype_reverse[::-1]
+
+    filename = 'article-' + str(article_id) + '-user-' + str(current_user.id) + mimetype
+
+    img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    current_article.article_img = filename
+    db.session.commit()
+    return make_response("Файл загружен", 200)
 
 # добавление статьи
 @app.route('/api/user/article', methods=['POST'])
@@ -317,20 +337,7 @@ def add_article(current_user):
     db.session.add(article)
     db.session.commit()
 
-    img = request.files['file']
-    if img:
-        filename = img.filename
-        mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
-        mimetype = '.' + mimetype_reverse[::-1]
-
-        filename = 'article-' + str(datetime.now()) + mimetype
-
-        img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        article.article_img = filename
-        db.session.commit()
-
-    return make_response('Статья успешно добавлена', 200)
+    return make_response(article.id, 200)
 
 
 # редиактирование статьи
@@ -351,19 +358,6 @@ def change_article(current_user, article_id):
     current_article.title = new_title
     current_article.text = new_text
     db.session.commit()
-
-    img = request.files['file']
-    if img:
-        filename = img.filename
-        mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
-        mimetype = '.' + mimetype_reverse[::-1]
-
-        filename = 'article-' + str(datetime.now()) + mimetype
-
-        img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        current_article.article_img = filename
-        db.session.commit()
 
     return make_response('Статья успешно отредактирована', 200)
 

@@ -53,7 +53,7 @@
             accept="image/jpeg,image/png"
             name="file"
             placeholder="Фото"
-            @change="article_img"
+            @change="getFile"
         />
       </label>
       <div class="form__button form_card__button">
@@ -97,6 +97,9 @@ export default {
     }
   },
   methods: {
+    getFile(e) {
+      this.article_img = e.target.files[0]
+    },
     async createNews(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
@@ -105,36 +108,31 @@ export default {
         if (this.article_img) {
           try {
             let formData = new FormData();
-            formData.append('file', this.article_img.target.files[0])
-            const response = await axios.put('http://127.0.0.1:5000/api/user/article', {
-              title: this.title,
-              text: this.text,
-              formData
-            }, {
-              headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            formData.append('file', this.article_img)
+            const response = await axios.post(`http://127.0.0.1:5000/api/user/change/article/img/${this.article.id}`, formData, {
+              headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
+              'Content-Type': 'multipart/form-data'
             })
           } catch (error) {
-            alert(error.request.response)
-          } finally {
-            this.$emit('create', this.title)
+            console.log(error)
           }
-        } else {
-          try {
-            const response = await axios.put('http://127.0.0.1:5000/api/user/article', {
-              title: this.title,
-              text: this.text,
-            }, {
-              headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
-            })
-          } catch (error) {
-            alert(error.request.response)
-          } finally {
-            this.$emit('create', this.title)
-          }
+        }
+        try {
+          const response = await axios.put(`http://127.0.0.1:5000/api/user/change/article/${this.article.id}`, {
+            title: this.title,
+            text: this.text,
+          }, {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          })
+        } catch (error) {
+          console.log(error.request.response)
+        } finally {
+          this.$emit('create', this.title)
         }
       }
     },
     installArticle() {
+      console.log(this.article)
       this.title = this.article.title
       this.text = this.article.text
     }

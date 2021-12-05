@@ -53,7 +53,7 @@
             accept="image/jpeg,image/png"
             name="file"
             placeholder="Фото"
-            @change="article_img"
+            @change="getFile"
         />
       </label>
       <div class="form__button form_card__button">
@@ -78,6 +78,7 @@ export default {
       title: '',
       text: '',
       article_img: File,
+      article: {}
     }
   },
   validations() {
@@ -91,26 +92,39 @@ export default {
     }
   },
   methods: {
+    getFile(e) {
+      this.article_img = e.target.files[0]
+    },
     async createNews(e) {
       this.v$.$touch()
       if (this.v$.$invalid) {
         console.log('error')
       } else {
         try {
-          let formData = new FormData();
-          formData.append('file', this.article_img.target.files[0])
-          console.log(this.article_img)
           const response = await axios.post('http://127.0.0.1:5000/api/user/article', {
             title: this.title,
             text: this.text,
-            formData
           }, {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
           })
+          console.log(response.data)
+          this.article.id = response.data
         } catch (error) {
-          alert(error.request.response)
+          console.log(error)
         } finally {
           this.$emit('create', this.title)
+        }
+      }
+      if (this.article_img) {
+        try {
+          let formData = new FormData();
+          formData.append('file', this.article_img)
+          const response = await axios.post(`http://127.0.0.1:5000/api/user/change/article/img/${this.article.id}`, formData, {
+            headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
+            'Content-Type': 'multipart/form-data'
+          })
+        } catch (error) {
+          console.log(error)
         }
       }
     },

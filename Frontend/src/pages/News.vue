@@ -79,7 +79,7 @@ export default {
     async fetchNews(e) {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/news')
-        this.news = [...this.news, ...response.data]
+        this.news = [...response.data]
       } catch (error) {
         alert(error.request.response)
       } finally {
