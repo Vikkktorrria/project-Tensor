@@ -13,7 +13,7 @@ from app import app, db
 from app.models import *
 
 # проверить директорию
-UPLOAD_FOLDER = './app/upload'
+UPLOAD_FOLDER = 'C:/Users/mauta/Desktop/project-Tensor-main/Backend/app/upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -132,7 +132,7 @@ def get_articles():
 @token_required
 def get_diagnoses(current_user):
     patient = Patient.query.filter_by(user_id=current_user.id).first()
-    all = Note.query.filter_by(user_id=patient.user_id).all()
+    all = Note.query.filter_by(patient_id=patient.id).all()
     results = notes_schema.dump(all)
     for val in results:
         current_doctor = Doctor.query.filter_by(id=val['doctor_id']).first()
@@ -307,7 +307,7 @@ def login():
 def add_article(current_user):
     title = request.json['title']
     text = request.json['text']
-    article_img = request.json['article_img']
+    article_img = None
     user_id = current_user.id
 
     if not current_user.is_doctor:
@@ -316,6 +316,19 @@ def add_article(current_user):
     article = Article(text, article_img, title, user_id)
     db.session.add(article)
     db.session.commit()
+
+    img = request.files['file']
+    if img:
+        filename = img.filename
+        mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
+        mimetype = '.' + mimetype_reverse[::-1]
+
+        filename = 'article-' + str(datetime.now()) + mimetype
+
+        img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        article.article_img = filename
+        db.session.commit()
 
     return make_response('Статья успешно добавлена', 200)
 
@@ -326,20 +339,31 @@ def add_article(current_user):
 def change_article(current_user, article_id):
     new_title = request.json['title']
     new_text = request.json['text']
-    new_article_img = request.json['article_img']
     current_article = Article.query.filter_by(id=article_id).first()
     user_id = current_article.user_id
 
     if not current_user.is_doctor:
-        return make_response('Вы не можете редактировать статью', 403)
+        return make_response('Вы не можете редактировать статью. Вы не являетесь доктором.', 403)
 
     if current_user.id != user_id:
-        return make_response('Вы не можете редактировать статью', 403)
+        return make_response('Вы не можете редактировать статью. Это не ваша статья.', 403)
 
     current_article.title = new_title
     current_article.text = new_text
-    current_article.article_img = new_article_img
     db.session.commit()
+
+    img = request.files['file']
+    if img:
+        filename = img.filename
+        mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
+        mimetype = '.' + mimetype_reverse[::-1]
+
+        filename = 'article-' + str(datetime.now()) + mimetype
+
+        img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        current_article.article_img = filename
+        db.session.commit()
 
     return make_response('Статья успешно отредактирована', 200)
 
