@@ -10,7 +10,7 @@
         }"
       >
         <input
-            type="text"
+            type="email"
             class="form__input"
             placeholder="Почта"
             v-model.trim="v$.email.$model"

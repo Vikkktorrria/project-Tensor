@@ -6,51 +6,17 @@
     </button>
   </div>
   <div class="container container_only-row">
-    <div
-        class="row"
+    <Article
         v-for="item in news"
         :key="item.id"
-    >
-      <div class="card card_no-border col-md-8" href="#">
-        <h3 class="card__title">{{item.title}}</h3>
-        <div class="card__pic" v-if="item.article_img">
-          <img
-            :src="'http://127.0.0.1:5000/user/image/' + item.article_img"
-            :alt="item.title"
-            class="card__pic-image">
-        </div>
-        <div class="card__text">
-          {{item.text}}
-        </div>
-        <div class="card__footer">
-          <div class="card__date">
-            {{item.created_on}}
-          </div>
-          <div v-if="currentUser?.isDoctor" class="news__buttons">
-            <div class="form__button form_card__button">
-              <button class="btn" @click="this.dialogUpdateVisible = true">
-                Редактировать
-              </button>
-            </div>
-            <div class="form__button form_card__button">
-              <button class="btn" @click="deleteNews(item.id)">
-                Удалить
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <my-dialog v-model:show="dialogUpdateVisible">
-        <update-article
-            :article="item.id"
-            @create="updateNews"
-        ></update-article>
-      </my-dialog>
-    </div>
+        :item="item"
+        @update="updateArticle"
+        @delete="deleteArticle"
+    ></Article>
   </div>
   <my-dialog v-model:show="dialogVisible">
     <create-article
-        @create="createNews"
+        @create="createArticle"
     ></create-article>
   </my-dialog>
 </template>
@@ -59,18 +25,17 @@
 import axios from "axios";
 import {mapState} from "vuex";
 import CreateArticle from "../components/CreateArticle";
-import UpdateArticle from "../components/UpdateArticle";
+import Article from "../components/Article";
 
 export default {
   components: {
+    Article,
     CreateArticle,
-    UpdateArticle,
   },
   name: "News",
   data() {
     return {
       dialogVisible: false,
-      dialogUpdateVisible: false,
       news: [],
       article: [],
     }
@@ -81,35 +46,22 @@ export default {
         const response = await axios.get('http://127.0.0.1:5000/api/news')
         this.news = [...response.data]
       } catch (error) {
-        alert(error.request.response)
-      } finally {
-
+        console.log(error)
       }
     },
-    async createNews(e) {
+    async createArticle(e) {
       this.dialogVisible = false;
       setTimeout(async () => {
         await this.fetchNews()
-      }, 1500)
+      }, 500)
     },
-    async updateNews(e) {
-      this.dialogUpdateVisible = false;
+    updateArticle(e) {
       setTimeout(async () => {
         await this.fetchNews()
-      }, 1500)
+      }, 500)
     },
-    async deleteNews(article_id) {
-      if(confirm('Вы действительно хотите удалить запись?')) {
-        try {
-          const response = await axios.delete(`http://127.0.0.1:5000/api/user/delete/article/${article_id}`, {
-            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
-          })
-        } catch (error) {
-          alert(error.request.response)
-        } finally {
-          await this.fetchNews()
-        }
-      }
+    async deleteArticle(e) {
+      await this.fetchNews()
     },
   },
   computed: {
@@ -132,12 +84,5 @@ export default {
   display: flex;
   justify-content: end;
   margin-left: 10px;
-}
-.news__buttons {
-  display: flex;
-}
-.card__footer {
-  display: flex;
-  justify-content: space-between;
 }
 </style>
