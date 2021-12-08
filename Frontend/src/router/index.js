@@ -8,6 +8,7 @@ import Profile from "../pages/Profile";
 import Health from "../pages/Health";
 import News from "../pages/News";
 import Note from "../pages/Note";
+import ProfileDoctor from "../pages/ProfileDoctor";
 
 
 const routes = [
@@ -45,6 +46,11 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: Profile
+    },
+    {
+        path: '/profile-doctor',
+        name: 'profile-doctor',
+        component: ProfileDoctor
     },
     {
         path: '/health',

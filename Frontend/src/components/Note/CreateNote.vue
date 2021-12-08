@@ -43,7 +43,7 @@
 import {numeric, required, minLength} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
-import toggleMixin from "../mixins/toggleMixin";
+import toggleMixin from "../../mixins/toggleMixin";
 
 export default {
   name: "CreateNote",

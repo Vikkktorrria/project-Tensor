@@ -25,8 +25,8 @@
 <script>
 import '@fullcalendar/core/vdom'
 import FullCalendar from '@fullcalendar/vue3'
-import CreateNote from "../components/CreateNote";
-import UpdateNote from "../components/UpdateNote";
+import CreateNote from "../components/Note/CreateNote";
+import UpdateNote from "../components/Note/UpdateNote";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ruLocale from "@fullcalendar/core/locales/ru";
@@ -54,9 +54,6 @@ export default {
           center: 'title',
           right: 'today prev,next'
         },
-        dateClick: (e) => {
-          //handle date click
-        },
         businessHours: [
           {
             daysOfWeek: [1, 2, 3, 4, 5],
@@ -71,7 +68,7 @@ export default {
         eventRemove:
         */
         initialView: 'timeGridWeek',
-        initialEvents: this.startEvents, // alternatively, use the `events` setting to fetch from a feed
+        initialEvents: this.startEvents,
         editable: false,
         selectable: true,
         selectMirror: true,

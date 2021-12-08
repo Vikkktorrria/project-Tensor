@@ -157,6 +157,7 @@ textarea {
 
 .navigation__text {
   padding-left: 20px;
+  user-select: none;
 }
 
 .navigation__icon {

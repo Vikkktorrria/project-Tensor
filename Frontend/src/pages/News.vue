@@ -24,8 +24,8 @@
 <script>
 import axios from "axios";
 import {mapState} from "vuex";
-import CreateArticle from "../components/CreateArticle";
-import Article from "../components/Article";
+import CreateArticle from "../components/News/CreateArticle";
+import Article from "../components/News/Article";
 
 export default {
   components: {
@@ -44,7 +44,9 @@ export default {
     async fetchNews(e) {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/news')
-        this.news = [...response.data]
+        let news = response.data
+        news.forEach((el) => { el.created_on = el.created_on.split('T')[0]})
+        this.news = news
       } catch (error) {
         console.log(error)
       }
@@ -53,12 +55,12 @@ export default {
       this.dialogVisible = false;
       setTimeout(async () => {
         await this.fetchNews()
-      }, 500)
+      }, 1500)
     },
     updateArticle(e) {
       setTimeout(async () => {
         await this.fetchNews()
-      }, 500)
+      }, 1500)
     },
     async deleteArticle(e) {
       await this.fetchNews()

@@ -7,7 +7,7 @@
       <img
           v-if="!currentUser.avatarName"
           class="card_user__image"
-          src="../assets/image/user-icon.png"
+          src="../../assets/image/user-icon.png"
           :alt="currentUser.name"
       >
       <img
@@ -27,13 +27,25 @@
       />
     </label>
     <div class="card card_no-border col-md-8">
-      <div class="card__title">
+      <div v-if="!currentUser.isDoctor" class="card__title">
         {{currentUser.surname}} {{currentUser.name}} {{currentUser.patronymic}},
         {{currentUser.age}} {{currentUser.ageText}}
         <br>
         Email: {{currentUser.email}}
         <br>
         Телефон: {{currentUser.phone}}
+      </div>
+      <div v-if="currentUser.isDoctor" class="card__title">
+        {{currentUser.surname}} {{currentUser.name}} {{currentUser.patronymic}},
+        {{currentUser.age}} {{currentUser.ageText}}
+        <br>
+        Email: {{currentUser.email}}
+        <br>
+        Телефон: {{currentUser.phone}}
+        <br>
+        Квалификация: {{this.doctorData.qualification}}
+        <br>
+        Опыт работы: {{this.doctorData.experience}}
       </div>
     </div>
   </div>
@@ -45,6 +57,11 @@ import axios from "axios";
 
 export default {
   name: "HeadProfile",
+  data() {
+    return {
+      doctorData: []
+    }
+  },
   computed: {
     ...mapState({
       currentUser: state => state.auth.currentUser,
@@ -63,15 +80,28 @@ export default {
           headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
           'Content-Type': 'multipart/form-data'
         })
-        console.log(response.data)
         await this.checkAuth()
       } catch (error) {
-        alert(error.request.response)
-      } finally {
-
+        console.log(error.request.response)
       }
     },
+    async fetchDoctor() {
+      if(this.currentUser.isDoctor) {
+        try {
+          const response = await axios.get('http://127.0.0.1:5000/api/user/doctor/info', {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          })
+          console.log(response.data)
+          this.doctorData = response.data
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
   },
+  mounted() {
+    this.fetchDoctor()
+  }
 }
 </script>
 

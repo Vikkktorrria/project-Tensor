@@ -72,8 +72,8 @@
     </div>
     <div class="navigation__bar" v-if="isAuth && currentUser.isDoctor">
       <nav-el
-          @click="$router.push('/profile')"
-          :is-active="isSelected('/profile')"
+          @click="$router.push('/profile-doctor')"
+          :is-active="isSelected('/profile-doctor')"
           :class-icon="'user-icon'"
       >Профиль</nav-el>
       <nav-el

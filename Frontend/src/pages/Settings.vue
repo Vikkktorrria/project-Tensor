@@ -24,9 +24,9 @@
 
 <script>
 import {mapMutations, mapState} from 'vuex';
-import ChangePasswordForm from "../components/ChangePasswordForm";
-import NotificationForm from "../components/NotificationForm";
-import ChangeEmailForm from "../components/ChangeEmailForm";
+import ChangePasswordForm from "../components/Settings/ChangePasswordForm";
+import NotificationForm from "../components/Settings/NotificationForm";
+import ChangeEmailForm from "../components/Settings/ChangeEmailForm";
 export default {
   name: "Settings",
   components: {

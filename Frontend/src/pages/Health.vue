@@ -45,8 +45,9 @@ export default {
         const response = await axios.get('http://127.0.0.1:5000/api/user/diagnoses', {
           headers: {Authorization:`Bearer ${localStorage.getItem('token')}`},
         })
-        console.log(response)
-        this.diagnoses = [...this.diagnoses, ...response.data]
+        let diagnoses = response.data
+        diagnoses.forEach((el) => { el.date_of_visit = el.date_of_visit.split('T')[0] })
+        this.diagnoses = [...this.diagnoses, ...diagnoses]
       } catch (error) {
         alert(error.request.response)
       } finally {
