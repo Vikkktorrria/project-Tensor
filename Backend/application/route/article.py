@@ -32,11 +32,12 @@ def upload_article_image(current_user, article_id):
         return make_response("Фото не загружено!", 400)
 
     filename = img.filename
-    mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
-    mimetype = '.' + mimetype_reverse[::-1]
-
-    filename = 'article-' + str(article_id) + '-user-' + str(current_user.id) + mimetype
-
+#     mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
+#     mimetype = '.' + mimetype_reverse[::-1]
+#
+#     filename = 'article-' + str(article_id) + '-user-' + str(current_user.id) + mimetype
+# удаление нужны права администратора и проверка существует ли файл
+#     os.remove(app.config['UPLOAD_FOLDER'] + '/' + str(current_article.article_img))
     img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     current_article.article_img = filename

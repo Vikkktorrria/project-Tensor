@@ -29,11 +29,10 @@ def upload_image(current_user):
         return make_response("Фото не загружено!", 400)
 
     filename = img.filename
-    mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
-    mimetype = '.' + mimetype_reverse[::-1]
-
-    filename = 'avatar-' + str(current_user.id) + mimetype
-
+#     mimetype_reverse = filename[::-1].partition('.')[0]  # определяем тип
+#     mimetype = '.' + mimetype_reverse[::-1]
+# удаление нужны права администратора и проверка существует ли файл
+#     os.remove(app.config['UPLOAD_FOLDER'] + '/' + str(current_user.avatar_img))
     img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     current_user.avatar_img = filename
