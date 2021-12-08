@@ -9,6 +9,9 @@ export const authModule = {
     mutations: {
         setAuth(state, auth) {
             state.isAuth = auth;
+            if(!auth) {
+                state.currentUser = []
+            }
         },
         setUser(state, person) {
             if (!person)
@@ -47,7 +50,8 @@ export const authModule = {
                     series: person.passport.series ?? '',
                 },
                 snils: person.snils ?? '',
-                anamnesis: person.anamnesis ?? ''
+                anamnesis: person.anamnesis ?? '',
+                isDoctor: user.is_doctor
             };
         },
         // setUserAuth(state, user) {
