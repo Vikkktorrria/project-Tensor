@@ -23,7 +23,7 @@
     <div class="row">
       <div class="card card_no-border col-md-8">
         <div class="card__title">
-          {{currentUser.name}} {{currentUser.surname}} {{currentUser.patronymic}},
+          {{currentUser.surname}} {{currentUser.name}} {{currentUser.patronymic}},
           {{currentUser.age}} {{currentUser.ageText}}
           <br>
           Email: {{currentUser.email}}

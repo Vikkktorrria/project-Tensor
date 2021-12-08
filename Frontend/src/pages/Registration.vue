@@ -5,21 +5,6 @@
       <div
           class="form__el"
           :class="{
-          'form__el error': v$.name.$error,
-          'form__el success': !v$.name.$error && v$.name.$dirty
-        }"
-      >
-        <input
-            type="text"
-            class="form__input"
-            placeholder="Имя"
-            v-model.trim="v$.name.$model"
-        >
-        <small v-if="v$.name.minLength">Поле имя не может быть пустым (минимум 3 символа)</small>
-      </div>
-      <div
-          class="form__el"
-          :class="{
           'form__el error': v$.lastName.$error,
           'form__el success': !v$.lastName.$error && v$.lastName.$dirty
         }"
@@ -31,6 +16,21 @@
             v-model.trim="v$.lastName.$model"
         >
         <small v-if="v$.name.minLength">Поле фамилия не может быть пустым (минимум 2 символа)</small>
+      </div>
+      <div
+          class="form__el"
+          :class="{
+          'form__el error': v$.name.$error,
+          'form__el success': !v$.name.$error && v$.name.$dirty
+        }"
+      >
+        <input
+            type="text"
+            class="form__input"
+            placeholder="Имя"
+            v-model.trim="v$.name.$model"
+        >
+        <small v-if="v$.name.minLength">Поле имя не может быть пустым (минимум 3 символа)</small>
       </div>
       <div
           class="form__el"

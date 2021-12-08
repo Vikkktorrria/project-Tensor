@@ -189,7 +189,7 @@ export default {
             let timeEnd = new Date((Date.parse(item['date_of_visit']) + 3600000 / 2))
             calendarApi.addEvent({
               id: item.id,
-              title: 'Пациент: ' + item.patient.surname + ' ' + item.patient.name + ' ' + item.patient.patronymic,
+              title: 'Пациент: ' + item.patient.name + ' ' + item.patient.surname + ' ' + item.patient.patronymic,
               start: item['date_of_visit'],
               editable: false,
               end: timeEnd,

@@ -1,6 +1,6 @@
 <template>
   <h3 class="card__title">
-    {{note.patient.name}} {{note.patient.surname}} {{note.patient.patronymic}}
+    {{note.patient.surname}} {{note.patient.name}} {{note.patient.patronymic}}
   </h3>
   <div class="card__text">
     <form class="form form_card" @submit.prevent="createNote">
@@ -44,7 +44,7 @@
       </div>
       <div class="form__button form_card__button">
         <button class="btn">
-          Отправить
+          Сохранить
         </button>
       </div>
     </form>

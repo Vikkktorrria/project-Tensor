@@ -21,7 +21,7 @@
             {{diagnosis.date_of_visit}}
           </div>
           <div class="card__name-doctor">
-            {{diagnosis.doctor.name}} {{diagnosis.doctor.surname}} {{diagnosis.doctor.patronymic}}
+            {{diagnosis.doctor.surname}} {{diagnosis.doctor.name}} {{diagnosis.doctor.patronymic}}
           </div>
         </div>
       </div>
