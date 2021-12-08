@@ -4,6 +4,7 @@ from application import app, db
 from application.models.user_model import User
 from application.models.note_model import Note, notes_schema, note_schema, unsigned_notes_schema
 from application.models.doctor_model import Doctor
+from application.models.patient_model import Patient
 from application.route.auth import token_required
 
 # все диагнозы
@@ -86,8 +87,9 @@ def get_note_doctor(current_user):
 
     results = notes_schema.dump(doctors_notes)
     for val in results:
-        patient = User.query.filter_by(id=val['user_id']).first()
-        val['patient'] = {'name': patient.name, 'surname': patient.surname, 'patronymic': patient.patronymic}
+        user_patient = User.query.filter_by(id=val['user_id']).first()
+        patient = Patient.query.filter_by(user_id=val['user_id']).first()
+        val['patient'] = {'name': user_patient.name, 'surname': user_patient.surname, 'patronymic': user_patient.patronymic, 'anamnesis': patient.anamnesis}
     return jsonify(results)
 
 
