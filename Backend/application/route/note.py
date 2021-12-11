@@ -135,3 +135,12 @@ def change_note_doctor(current_user, note_id):
     db.session.commit()
 
     return make_response('Запись успешно отредактирована', 200)
+
+
+#получить записи доктора для пациента
+@app.route('/api/user/notes/doctor/<doctor_id>', methods=['GET'])
+@token_required
+def get_doctors_noted(doctor_id):
+    notes = Note.query.filter_by(doctor_id = doctor_id).all()
+    result = notes_schema.dump(notes)
+    return jsonify(result)
