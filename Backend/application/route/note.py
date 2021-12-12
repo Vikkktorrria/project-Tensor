@@ -74,7 +74,6 @@ def delete_note_by_doctor(current_user, note_id):
 
     return make_response('Запись успешно удалена', 200)
 
-
 # получение записей (для доктора)
 @app.route('/api/user/doctor/note', methods=['GET'])
 @token_required
@@ -90,6 +89,17 @@ def get_note_doctor(current_user):
         user_patient = User.query.filter_by(id=val['user_id']).first()
         patient = Patient.query.filter_by(user_id=val['user_id']).first()
         val['patient'] = {'name': user_patient.name, 'surname': user_patient.surname, 'patronymic': user_patient.patronymic, 'anamnesis': patient.anamnesis}
+    return jsonify(results)
+
+# получение записей (для пациента)
+@app.route('/api/user/doctor/note/<doctor_id>', methods=['GET'])
+@token_required
+def get_note_patient(current_user,doctor_id):
+
+    current_doctor = Doctor.query.filter_by(user_id=doctor_id).first()
+    doctors_notes = Note.query.filter_by(doctor_id=doctor_id).all()
+
+    results = notes_schema.dump(doctors_notes)
     return jsonify(results)
 
 

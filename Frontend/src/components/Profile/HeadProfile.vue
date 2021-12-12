@@ -43,7 +43,7 @@
         <br>
         Телефон: {{currentUser.phone}}
         <br>
-        Квалификация: {{this.doctorData.qualification}}
+        Специализация: {{this.doctorData.qualification}}
         <br>
         Опыт работы: {{this.doctorData.experience}}
       </div>

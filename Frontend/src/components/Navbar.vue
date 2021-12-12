@@ -41,7 +41,7 @@
           @click="$router.push('/health')"
           :is-active="isSelected('/health')"
           :class-icon="'visits-icon'"
-      >Здоровье</nav-el>
+      >Диагнозы</nav-el>
       <nav-el
           @click="$router.push('/settings')"
           :is-active="isSelected('/settings')"

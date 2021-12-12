@@ -28,7 +28,7 @@
         </div>
         <div class="form__button form_card__button">
           <button class="btn">
-            Изменить
+            Сохранить
           </button>
         </div>
       </form>

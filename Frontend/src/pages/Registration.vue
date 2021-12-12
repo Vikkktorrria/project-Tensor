@@ -60,7 +60,7 @@
             placeholder="Дата рождения"
             v-model.trim="v$.birthday.$model"
         >
-        <small v-if="v$.birthday.regexBirthday.$invalid">День рождения некоректен (YYYY-MM-DD)</small>
+        <small v-if="v$.birthday.regexBirthday.$invalid">День рождения некоректен (DD-MM-YYYY)</small>
         <small v-else-if="v$.birthday.required">Поле день рождения не может быть пустым</small>
       </div>
       <div
@@ -166,7 +166,7 @@ import {numeric, required, email, minLength, minValue, helpers} from '@vuelidate
 import useVuelidate from "@vuelidate/core";
 import axios from "axios";
 import {mapState} from "vuex";
-const regexBirthday = helpers.regex(/^\d{4}[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/)
+const regexBirthday = helpers.regex(/^(0?[1-9]|[12][0-9]|3[01])[\-](0?[1-9]|1[012])[\-]\d{4}$/)
 const regexPhone = helpers.regex(/^\+?\d{1,3}?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\-?\d\d$/)
 export default {
   name: "Registration",
@@ -232,6 +232,9 @@ export default {
       if (this.v$.$invalid) {
         console.log('error')
       } else {
+        let birthday = this.v$.birthday.$model
+        birthday = birthday.split('-')
+        birthday = birthday[2] + '-' + birthday[1] + '-' + birthday[0]
         try {
           const response = await axios.post('http://127.0.0.1:5000/api/auth/registration', {
             headers: {'Content-type': 'application/json'},
@@ -241,7 +244,7 @@ export default {
             phone: this.v$.phone.$model,
             email: this.v$.email.$model,
             password: this.v$.password.$model,
-            birthday: this.v$.birthday.$model
+            birthday: birthday
           })
           console.log(response)
           await this.$router.push({ name: 'auth' });

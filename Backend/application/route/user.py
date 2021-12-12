@@ -101,7 +101,7 @@ def get_diagnoses(current_user):
     for val in results:
         current_doctor = Doctor.query.filter_by(id=val['doctor_id']).first()
         doctor = User.query.filter_by(id=current_doctor.user_id).first()
-        val['doctor'] = {'name': doctor.name, 'surname': doctor.surname, 'patronymic': doctor.patronymic}
+        val['doctor'] = {'name': doctor.name, 'surname': doctor.surname, 'patronymic': doctor.patronymic, 'qualification': current_doctor.qualification, 'experience': current_doctor.experience}
     return jsonify(results)
 
 
