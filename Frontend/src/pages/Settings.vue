@@ -1,4 +1,4 @@
-<template v-if="isAuth">
+<template>
   <h1 class="h1-text">Настройки</h1>
   <div class="container">
     <div class="row">

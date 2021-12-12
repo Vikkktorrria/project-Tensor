@@ -1,4 +1,4 @@
-<template v-if="!isAuth">
+<template>
   <h1 class="h1-text">Вход</h1>
   <div class="content__container">
     <form class="form" @submit.prevent="submitHandler">

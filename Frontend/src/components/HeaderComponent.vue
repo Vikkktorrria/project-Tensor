@@ -14,8 +14,8 @@
       <div class="name__text">
         Здравствуйте, {{ this.currentUser.name }}!
       </div>
-      <div class="name__icon">
-
+      <div :class="{'name__icon': !currentUser.avatarName}">
+        <img class="profile_icon" v-if="currentUser.avatarName" :src="'http://127.0.0.1:5000/user/image/' + currentUser.avatarName">
       </div>
     </div>
   </header>
@@ -47,5 +47,9 @@ export default {
 </script>
 
 <style scoped>
-
+.profile_icon {
+  width: 48px;
+  height: 58px;
+  border-radius: 29px;
+}
 </style>

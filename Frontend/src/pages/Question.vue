@@ -1,4 +1,4 @@
-<template v-if="!isAuth">
+<template>
   <div class="container container_only-row">
     <div class="row">
       <div class="accordion">
