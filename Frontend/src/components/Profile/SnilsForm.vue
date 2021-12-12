@@ -35,7 +35,7 @@
         </div>
         <div class="form__button form_card__button" v-if="!currentUser.snils">
           <button class="btn">
-            Изменить
+            Сохранить
           </button>
         </div>
       </form>
