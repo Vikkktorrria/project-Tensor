@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from flask import jsonify, make_response, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-import uuid, jwt
+import uuid, jwt, pytz
 
 from application import app, db
 from application.models.user_model import User, user_schema
@@ -22,13 +22,16 @@ def token_required(f):
             token = token.split(" ")[1]
 
         if not token:
-            return jsonify({'message': 'Ошибка авторизации'}), 401
+            return make_response('Ошибка авторизации. Токен не найден!', 409)
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
             current_user = User.query.filter_by(public_id=data['public_id']).first()
         except:
-            return jsonify({'message': 'Ошибка авторизации'}), 401
+            return make_response('Ошибка авторизации. Время сеанса истекло!', 409)
+        
+        # if exp_time <= datetime.now(pytz.timezone('Europe/Moscow')):
+        #      return make_response('Время авторизации истекло', 409)
 
         return f(current_user, *args, **kwargs)
 
@@ -51,17 +54,16 @@ def register():
     # обработка ошибки существующей почты, номера телефона
     added_user = User.query.filter_by(mail=mail).first()
     if added_user:
-        return make_response('Registration failed', 409, {'message': 'Пользователь с такой почтой уже существует!'})
+        return make_response('Пользователь с такой почтой уже зарегистрирован', 409)
 
     added_user = User.query.filter_by(phone_number=phone_number).first()
     if added_user:
-        return make_response('Registration failed', 409,
-                             {'message': 'Данный номер телефона уже привязан к другой учетной записи!'})
+        return make_response('Данный номер телефона уже привязан к другой учётной записи', 409)
 
     user = User(public_id, name, surname, patronymic, b_date, mail, password, phone_number, avatar_img)
     db.session.add(user)
     db.session.commit()
-    return make_response('User successful registered', 200)
+    return make_response('Регистрация прошла успешно', 200)
 
 
 # авторизация пользователя
@@ -70,15 +72,15 @@ def login():
     auth = request.authorization
 
     if not auth or not auth.username or not auth.password:
-        return make_response('Could not verify', 401, {'message': 'Login required!'})
+        return make_response('Не введёны имя пользователя или пароль', 401)
 
     user = User.query.filter_by(mail=auth.username).first()
 
     if not user:
-        return make_response('Could not verify', 401, {'message': 'Login required!'})
+        return make_response('Такой пользователь не найден', 401)
 
     if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.now() + timedelta(minutes=120)},
+        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.now(pytz.timezone('Europe/Moscow')) + timedelta(minutes=1)},
                            app.config['SECRET_KEY'])
 
         result = user_schema.dump(user)
@@ -99,4 +101,4 @@ def login():
                         'user': {'user': result, 'passport': {'series': passport.series, 'number': passport.number},
                                  'snils': snils.number, 'anamnesis': patient.anamnesis}})
 
-    return make_response('Could not verify', 401, {'message': 'Login required!'})
+    return make_response('Введённый пароль не верен', 401)
