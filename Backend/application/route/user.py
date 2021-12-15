@@ -2,6 +2,7 @@ import os
 
 from flask import Response, request, make_response, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from PIL import Image
 
 from application import app, db
 from application.models.user_model import User, user_schema
@@ -11,6 +12,21 @@ from application.models.patient_model import Patient
 from application.models.note_model import Note, notes_schema
 from application.models.doctor_model import Doctor
 from application.route.auth import token_required
+
+
+#функция для обрезки изображения по центру
+def crop_center(pil_img, crop_width, crop_height):
+    img_width, img_height = pil_img.size
+    return pil_img.crop(((img_width - crop_width) // 2,
+                         (img_height - crop_height) // 2,
+                         (img_width + crop_width) // 2,
+                         (img_height + crop_height) // 2))
+
+
+#максимальный квадрат изображения
+def crop_max_square(pil_img):
+    return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
+
 
 # получить img
 @app.route('/user/image/<file_name>', methods=['GET'])
@@ -33,6 +49,9 @@ def upload_image(current_user):
 #     mimetype = '.' + mimetype_reverse[::-1]
 # удаление нужны права администратора и проверка существует ли файл
 #     os.remove(app.config['UPLOAD_FOLDER'] + '/' + str(current_user.avatar_img))
+
+    img = Image.open(img)
+    img = crop_max_square(img)
     img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     current_user.avatar_img = filename

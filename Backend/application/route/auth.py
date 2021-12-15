@@ -80,7 +80,7 @@ def login():
         return make_response('Такой пользователь не найден', 401)
 
     if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.now(pytz.timezone('Europe/Moscow')) + timedelta(minutes=1)},
+        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.now(pytz.timezone('Europe/Moscow')) + timedelta(minutes=60)},
                            app.config['SECRET_KEY'])
 
         result = user_schema.dump(user)
