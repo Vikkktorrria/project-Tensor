@@ -109,7 +109,7 @@ export default {
 .card_user {
   -webkit-box-shadow: none;
   box-shadow: none;
-  width: 120px;
+  width: 130px;
   height: 130px;
 }
 .card_user:hover {

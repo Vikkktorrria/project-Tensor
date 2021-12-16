@@ -93,15 +93,15 @@ export default {
       let counter = 0
       let selectInfo = selInfo
       let calendarApi = selectInfo.view.calendar
-      let events = calendarApi.getEvents()
-      events.forEach((el) => {
-        if (el.extendedProps.userId === this.currentUser.id && el.start > Date.now()) {
-          counter += 1
-        }
-      })
-      if (counter > 1) {
-        alert('Вы уже создали более 1-й записи к данному врачу')
-      } else {
+      // let events = calendarApi.getEvents()
+      // events.forEach((el) => {
+      //   if (el.extendedProps.userId === this.currentUser.id && el.start > Date.now()) {
+      //     counter += 1
+      //   }
+      // })
+      // if (counter > 1) {
+      //   alert('Вы уже создали более 1-й записи к данному врачу')
+      // } else {
         try {
           this.currentEvents = [
             ...this.currentEvents,
@@ -123,7 +123,7 @@ export default {
           })
           await this.fetchNotes()
         }
-      }
+      // }
     },
     updateNote() {
       this.dialogUpdateVisible = false;

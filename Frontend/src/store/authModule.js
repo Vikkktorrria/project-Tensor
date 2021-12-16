@@ -71,7 +71,12 @@ export const authModule = {
                     commit('setUser', response.data)
                 } catch (error) {
                     alert('Проблема авторизации')
-                    commit('setAuth', false)
+                    if (Number(error.response.status) === 409) {
+                        commit('setAuth', false)
+                        commit('setUser', false)
+                        await this.$router.push({ name: 'auth'})
+                        localStorage.clear()
+                    }
                 } finally {
                 }
             } else {

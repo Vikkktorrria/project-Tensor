@@ -48,7 +48,7 @@ export default {
 
 <style scoped>
 .profile_icon {
-  width: 48px;
+  width: 58px;
   height: 58px;
   border-radius: 29px;
 }

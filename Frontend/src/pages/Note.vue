@@ -1,14 +1,22 @@
 <template>
-  <h1 class="h1-text">Запись</h1>
-  <select-doctor
-      v-if="!currentUser.isDoctor"
-      @selected="selectedDoctor"
-  ></select-doctor>
-  <calendar
-      v-if="currentDoctor || currentUser.isDoctor"
-      :doctor="currentDoctor"
-  >
-  </calendar>
+  <div v-if="(currentUser.snils && currentUser.anamnesis && currentUser.passport.number) || (currentUser.isDoctor)">
+    <h1 class="h1-text">Запись</h1>
+    <select-doctor
+        v-if="!currentUser.isDoctor"
+        @selected="selectedDoctor"
+    ></select-doctor>
+    <calendar
+        v-if="currentDoctor || currentUser.isDoctor"
+        :doctor="currentDoctor"
+    >
+    </calendar>
+  </div>
+  <div v-else>
+    <h1 class="h1-text">Запись</h1>
+    <h3 class="error__title">
+      Сначала заполните профиль на 100%
+    </h3>
+  </div>
 </template>
 
 <script>
@@ -43,4 +51,10 @@ export default {
 </script>
 
 <style>
+.error__title {
+  color: #35538D;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+}
 </style>

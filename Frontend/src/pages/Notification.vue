@@ -39,7 +39,7 @@
           Мои записи
         </h3>
         <div class="card__text">
-          Создайде запись
+          Создайте запись
         </div>
       </a>
     </div>
@@ -119,6 +119,7 @@ export default {
 }
 .slide_img {
   border-radius: 5px;
+  max-height: 550px;
   width: 100%;
 }
 </style>
